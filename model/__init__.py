@@ -19,7 +19,7 @@ class News(db.Model):
 
 class AdminLog(db.Model):
   is_admin = db.BooleanProperty(required=True, default=False)
-  user = db.ReferenceProperty(User, required=True)
+  user = db.ReferenceProperty(User, required=True, collection_name="user")
   when = db.DateTimeProperty(required=True, auto_now_add=True)
   handler = db.StringProperty(required=True)
   url = db.StringProperty(required=True)
