@@ -12,7 +12,7 @@ this:
   `git clone https://github.com/n-community/numa.git`
 - Run a local development server:  
   `dev_appserver.py numa/app.yaml`
-- Go to http://localhost:8080/ in your browser.
+- Go to http://localhost:8080 in your browser.
 - Try to log in. Any username and password will work.  If you're asked to verify
   your account, use the URL from the server console output (change www.nmaps.net
   to localhost:8080).
