@@ -207,38 +207,24 @@ function smaller(img, width, height) {
 }
 
 // feature queue rearranging
-
-function swap_down(node) {
+function swap(node, up){
   const node1 = node.parentElement.parentElement;
-  const node2 = node.parentElement.parentElement.nextElementSibling;
+  const node2 = up ? node1.previousElementSibling :
+                     node1.nextElementSibling;
+
   const map_id_1 = node1.dataset.id;
   const map_id_2 = node2.dataset.id;
 
+  if(!map_id_2) return false;
+
   const callback = function (response) {
     node1.parentNode.replaceChild(node1, node2);
-    node1.parentNode.insertBefore(node2, node1);
+    up ? node1.parentNode.insertBefore(node2, node1.nextSibling) :
+         node1.parentNode.insertBefore(node2, node1);
   }
 
   url = "/" + map_id_1 + "/swap"
   data = "other_map_id=" + map_id_2;
-  ajaxRequest(url, data, callback);
-  return false;
-}
-
-function swap_up(node) {
-  const node1 = node.parentElement.parentElement.previousElementSibling;
-  const node2 = node.parentElement.parentElement;
-  const map_id_1 = node1.dataset.id;
-  const map_id_2 = node2.dataset.id;
-
-  const callback = function (response) {
-    debugger
-    node1.parentNode.replaceChild(node1, node2);
-    node1.parentNode.insertBefore(node2, node1);
-  }
-
-  url = "/" + map_id_2 + "/swap"
-  data = "other_map_id=" + map_id_1;
   ajaxRequest(url, data, callback);
   return false;
 }

@@ -20,8 +20,8 @@
         by <a href="/user/{{map.user.username|urlencode}}">{{map.user.username|escape}}</a>
       </h2>
       <div class="body">
-        <div class="swap-down" onclick="swap_down(this);">SWAP DOWN</div>
-        <div class="swap-up" onclick="swap_up(this);">SWAP UP</div>
+        <div class="swap-up" onclick="swap(this, true);">SWAP UP</div>
+        <div class="swap-down" onclick="swap(this);">SWAP DOWN</div>
         <a href="/{{map.map_id}}"><img src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" class="thumb" /></a>
         <p>
           {{map.featured_text|bbcode}}
