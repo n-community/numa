@@ -1,0 +1,490 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #878481 url('gradient.png') repeat-x;
+  font: 11px Verdana, Tahoma, sans-serif;
+  color: #dbd7d0;
+}
+
+a:link, a:visited {
+  color: #fcad3d;
+  text-decoration: none;
+}
+
+a:link:hover {
+  color: #BF8C45;
+}
+
+a img {
+  border: 0;
+}
+
+hr {
+  color: #504C49;
+  border-style: inset;
+  width: 600px;
+}
+
+#main {
+  position: relative;
+  width: 858px;
+  background: url('background.png') no-repeat;
+
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -35px;
+}
+
+#head {
+  background: url('header.png') no-repeat;
+  height: 102px;
+}
+
+#userinfo {
+  height: 27px;
+  padding-top: 4px;
+  padding-left: 30px;
+  font: bold 12px Tahoma, sans-serif;
+  color: white;
+}
+
+#userinfo a {
+  text-decoration: none;
+  color: #fcad3d;
+}
+
+#sections {
+  position: relative;
+  width: 600px;
+  height: 47px;
+}
+
+#sections img {
+  width: 102px;
+  height: 44px;
+}
+
+#sections div {
+  position: absolute;
+  top: 2px;
+}
+
+#sections #home {
+  left: 13px;
+}
+
+#sections #maps {
+  left: 158px;
+}
+
+#sections #profile {
+  left: 308px;
+}
+
+#sections #other {
+  left: 458px;
+}
+
+#subsections {
+  font: bold 12px Tahoma, sans-serif;
+  height: 20px;
+  padding-top: 4px;
+  padding-left: 30px;
+}
+
+#subsections a {
+  text-decoration: none;
+  color: white;
+}
+
+#subsections .selected {
+  color: #fcad3d;
+}
+
+#subsections img, .bullet {
+  margin: 0 10px 0 10px;
+}
+
+#search {
+  position: absolute;
+  right: 2px;
+  top: 0px;
+  width: 258px;
+  height: 98px;
+}
+
+#searchbox {
+  display: block;
+  margin: 15px auto 0 auto;
+  padding: 3px;
+  width: 214px;
+  height: 14px;
+  border: 1px solid black;
+  text-indent: 18px;
+  background: white url('/static/magnify.png') no-repeat 2px 2px;
+}
+
+#search p {
+  padding: 8px 0 0 0;
+  margin: 0;
+  text-align: center;
+}
+
+#search a {
+  color: white;
+}
+
+#logo {
+  position: relative;
+  top: 20px;
+  margin: 0;
+  padding: 20px 0 50px 35px;
+  width: 179px;
+  height: 59px;
+}
+
+.section, .emptysection {
+  background: #5e5956 url('sectionbg.png') no-repeat;
+  border: 2px solid #363332;
+  margin-bottom: 16px;
+  clear: both;
+  position: relative;
+  z-index: 1;
+}
+
+.emptysection {
+  height: 42px;
+}
+
+.clear {
+  clear: both;
+}
+
+.attribs {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0 !important;
+  margin: 2px 2px 0 0;
+  background: url('sectionattribsbg.png') no-repeat;
+  font: 9px Tahoma, sans-serif;
+  width: 100px;
+  height: 42px !important;
+  height: 40px;
+  text-align: left;
+  vertical-align: middle;
+  border-collapse: collapse;
+}
+
+div.attribs {
+  padding: 5px;
+  width: 90px;
+}
+
+.attribs a {
+  color: white;
+  text-decoration: underline;
+  margin-right: 5px;
+}
+
+.attribs th {
+  padding: 0;
+  width: 40px;
+  color: #2A2827;
+}
+
+.attribs td {
+  padding: 0;
+  color: #F0F0E6;
+  width: 60px;
+}
+
+.section h2, .emptysection h2 {
+  font: 20px Tahoma, Arial, sans-serif;
+  color: white;
+  top: 2px;
+  left: 2px;
+  padding: 4px;
+  margin: 0;
+  min-height: 32px;
+  line-height: 32px;
+  vertical-align: middle;
+}
+
+.section h2 a:link, .emptysection h2 a:link, .section h2 a:visited, .emptysection h2 a:visited {
+  color: white;
+  text-decoration: underline;
+}
+
+.section h2 a img {
+  text-decoration: none;
+}
+
+.fave img {
+  width: 34px;
+  height: 34px;
+  vertical-align: middle;
+}
+
+.body {
+  padding: 10px;
+  clear: both;
+}
+
+.maplist {
+  width: 817px;
+  margin: 0 auto 0 auto;
+}
+
+.maplist td {
+  text-align: center;
+}
+
+.thumb, .thumbnail {
+  width: 132px;
+  height: 100px;
+  border: 3px solid #FCAD3D;
+}
+
+.thumb {
+  float: left;
+  position: relative;
+  margin: 8px 10px 10px 0px;
+}
+
+.caption {
+	font-style: italic;
+	font-size: 0.75em;
+	text-align: center;
+	margin-top: 0px;
+	padding-top: 0px;
+}
+
+.levelimage {
+  float: left;
+  width: 132px;
+  padding-top: 106px;
+  margin: 10px 10px 10px 0px;
+  position: relative;
+}
+
+.levelimage .thumbnail {
+  border: 3px solid #FCAD3D;
+  position: absolute;
+  top: 0;
+  width: 132px;
+  height: 100px;
+}
+
+.formtable th {
+  font: bold 11px Verdana, Tahoma, sans-serif;
+  width: 100px;
+  vertical-align: top;
+  text-align: left;
+  color: #dbd7d0;
+}
+
+.commentbox .formtable th {
+  color: black;
+}
+
+.formtable td {
+  font: 11px Verdana, Tahoma, sans-serif;
+}
+
+.browsetags {
+  height: 38px;
+  float: right;
+  width: 600px;
+  font-weight: normal;
+  line-height: 1.7em;
+}
+
+.browsetags a {
+  color: black;
+}
+
+.addtag {
+  background: url('plus.png') no-repeat 0 50%;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.remtag {
+  background: url('minus.png') no-repeat 0 50%;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.commentbox, .commenthead, .commentbody {
+  background-image: url('commentbox.png') !important;
+  background: url('commentbox-ie6.png');
+  background-repeat: no-repeat;
+}
+
+.reported .commentbox, .reported .commenthead, .reported .commentbody {
+  background-image: url('commentbox-mod.png') !important;
+}
+
+.authorcomment .commentbox, .authorcomment .commenthead, .authorcomment .commentbody {
+  background-image: url('commentbox-author.png') !important;
+}
+
+.comment {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.comment .userinfo {
+  position: absolute;
+  left: 0;
+  width: 100px;
+  vertical-align: top;
+  overflow: hidden;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.commentbox {
+  background-position: -1534px bottom;
+  width: 764px;
+  color: black;
+  margin-left: 70px;
+  padding-bottom: 1px;
+}
+
+.postinfo {
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  color: gray;
+}
+
+.commenthead {
+  background-position: -2px 0;
+}
+
+h3 {
+  clear: both;
+}
+
+.commentbox h3 {
+  margin: 0;
+  padding: 4px 0 0 60px;
+  font: bold 12px Verdana, Tahoma, sans-serif;
+  color: black;
+  height: 39px;
+}
+
+.comment h3 a:link, .comment h3 a:visited {
+  color: black;
+}
+
+.commentbody {
+  background-position: -768px 0;
+  background-repeat: repeat-y;
+  margin-bottom: 10px;
+  padding: 0 5px 0 40px;
+}
+
+.modlinks {
+  text-align: right;
+  padding: 0 5px 5px 0;
+  height: 15px;
+}
+
+dt {
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+dd {
+  text-indent: 10px;
+  margin: 0 0 20px 0;
+  text-indent: 10px;
+}
+
+#push {
+  height: 35px;
+}
+
+#footer {
+  margin: 0 auto;
+  position: relative;
+  width: 858px;
+
+  height: 35px;
+  background: url('footerbg.png') no-repeat;
+}
+
+#footer #copyright {
+  margin: 12px;
+  float: right;
+}
+
+.rated0, .rated1, .rated2, .rated3, .rated4, .rated5 {
+  float: left;
+  margin-right: 5px;
+  background: no-repeat 0;
+  background-image: url('rating.png') !important;
+  background-image: url('rating-ie6.png');
+  width: 60px;
+  height: 12px;
+  overflow: hidden;
+  text-indent: -5000px;
+}
+
+.rated0 { background-position: -60px 0; }
+.rated1 { background-position: -48px 0; }
+.rated2 { background-position: -36px 0; }
+.rated3 { background-position: -24px 0; }
+.rated4 { background-position: -12px 0; }
+
+#browsenext, #browseprev {
+  display: block;
+  padding-bottom: 20px;
+}
+
+#browsenext {
+  float: right;
+}
+
+.adbanner {
+  text-align: center;
+  margin: 0 auto 16px auto;
+  width: 468px;
+}
+
+#tagdialog {
+	position: relative;
+}
+
+#tagdialog input {
+	width: 100px;
+	margin-right: 3px;
+}
+
+#tagdialog a {
+	font-size: 0.8em;
+}
+
+#suggestable {
+	position: absolute;
+	background: white;
+	width: 100px;
+}
+
+.userbox {
+  float: left;
+  width: 74px;
+  height: 84px;
+  padding: 5px;
+  font-size: 10px;
+  text-align: center;
+}

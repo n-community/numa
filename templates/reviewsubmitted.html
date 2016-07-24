@@ -1,0 +1,11 @@
+{% extends "maps_section.html" %}
+{% block title %}Review for "{{map.name|striptags}}" accepted{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>Review for "{{map.name|striptags}}" accepted</h2>
+  <div class="body">
+    <p>Thank you. Your review has been accepted, and the map has been added to the Featured Map queue.</p>
+    <p><a href="/map/{{map.map_id}}">Back to the map</a></p>
+  </div>
+</div>
+{% endblock %}

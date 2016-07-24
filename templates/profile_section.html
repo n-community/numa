@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block sections %}
+  <div id="sections">
+    <div id="home"><a href="/"><img src="/static/spacer.png" alt="Home" /></a></div>
+    <div id="maps"><a href="/browse"><img src="/static/spacer.png" alt="Maps" /></a></div>
+    <div id="profile"><a href="/user/{{user.username|urlencode}}"><img src="/static/profile-selected.png" alt="Profile" /></a></div>
+    <div id="other"><a href="/other"><img src="/static/spacer.png" alt="Other" /></a></div>
+  </div>
+  <div id="subsections">
+    {% if session.logged_in %}
+      <a href="/user/{{user.username|urlencode}}" {% if "/user/"|urlcat:user.username|equals:path_qs %}class="selected"{% endif %}>Profile</a>
+      <img src="/static/plusbullet.png" alt="+" />
+      {% contextual_link /browse?q=favorites selected %}Favorites{% endlink %}
+      <img src="/static/plusbullet.png" alt="+" />
+      <a href="/browse?q=author:{{user.username|urlencode}}" {% if "/browse?q=author:"|urlcat:user.username|equals:path_qs %}class="selected"{% endif %}>My Maps</a>
+      <img src="/static/plusbullet.png" alt="+" />
+      <a href="/browse?q=delisted+author:{{user.username|urlencode}}" {% if "/browse?q=delisted+author:"|urlcat:user.username|equals:path_qs %}class="selected"{% endif %}>Delisted Maps</a>
+      <img src="/static/plusbullet.png" alt="+" />
+      {% contextual_link /submit selected %}Submit a Map{% endlink %}
+    {% endif %}
+  </div>
+{% endblock %}

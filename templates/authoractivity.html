@@ -1,0 +1,26 @@
+{% extends "maps_section.html" %}
+{% block title %}Active Authors{% endblock %}
+{% block content %}
+{% for entry in entries %}
+	<div class="section">
+    <h2><a href="/user/{{entry.0.username|urlencode}}">{{entry.0.username|escape}}</a></h2>
+    <div class="body">
+      <table class="maplist">
+        <tr>
+          {% for map in entry.1 %}
+            <td><a href="/{{map.map_id}}"><img src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" /></a></td>
+          {% endfor %}
+        </tr>
+        <tr>
+          {% for map in entry.1 %}
+            <td class="caption">{{map.name|escape}}</td>
+          {% endfor %}
+        </tr>
+      </table>
+    </div>
+	</div>
+  {% if forloop.first %}
+    {% include "adbanner.html" %}
+  {% endif %}
+{% endfor %}	
+{% endblock %}

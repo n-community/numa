@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>NUMA News</title>
+  <link rel="alternate" href="http://nmaps.net/" />
+  <link rel="self" href="http://nmaps.net/news.atom" />
+  <updated>{{updated.isoformat}}Z</updated>
+  <author>
+    <name>Nick Johnson</name>
+    <email>numa@notdot.net</email>
+  </author>
+  <id>tag:nmaps.net,2008-05-06:news.atom</id>
+
+  {% for entry in newsitems %}
+    <entry>
+      <title>{{entry.title}}</title>
+      <id>tag:nmaps.net,2008-05-06:news/{{entry.key.name}}</id>
+      <updated>{{entry.lastupdated}}Z</updated>
+      <content type="application/xhtml+xml" src="http://nmaps.net/" />
+      <summary type="xhtml" xml:lang="en">
+        <div xmlns="http://www.w3.org/1999/xhtml">{{entry.text|bbcode}}</div>
+      </summary>
+    </entry>
+  {% endfor %}
+</feed>

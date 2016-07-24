@@ -1,0 +1,19 @@
+{% extends "home_section.html" %}
+{% block title %}Log In{% endblock %}
+{% block content %}
+  <div class="section">
+    <h2>Log In to NUMA</h2>
+    <div class="body">
+      {% if error %}
+        <p class="error">{{error}}</p>
+      {% endif %}
+      <form method="post" action="/login">
+        <table class="formtable">
+          <tr><th>Username</th><td><input type="text" name="username" value="{{username}}" /></td></tr>
+          <tr><th>Password</th><td><input type="password" name="password" /></td></tr>
+          <tr><th></th><td><input type="submit" value="Log In" /></td></tr>
+        </table>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "maps_section.html" %}
+{% block title %}Map Listing{% endblock %}
+{% block head %}
+  {% if random %}
+    <meta name="robots" content="noindex" />
+  {% endif %}
+  {% if show_rss %}
+    <link rel="alternate" type="application/atom+xml" href="/browse.rss?q={{query|urlencode}}" />
+  {% endif %}
+{% endblock %}
+{% block content %}
+<div class="emptysection">
+	<div class="browsetags">
+		{% for tag in query_parts %}
+			<a class="remtag" href="/browse?q={{query_parts|remove_tag:tag|urlencode}}{% if random %}&amp;random=True{% endif %}">{{tag|escape}}</a>
+		{% endfor %}
+		{% for tag in suggested_tags %}
+		  <a class="addtag" href="/browse?q={{query_parts|add_tag:tag|urlencode}}{% if random %}&amp;random=True{% endif %}">{{tag|escape}}</a>
+		{% endfor %}
+	</div>
+	<h2>Map Listing: {{start|add:1}} to {{start|add:count}}</h2>
+</div>
+{% for map in results %}
+<div class="section">
+  <h2{% if session.logged_in and user.ismoderator and map.reported %} class="reported"{% endif %}>
+    {% if session.logged_in %}
+      <a class="fave" href="#" onclick="javascript:return starclick(this, {{map.map_id}});">
+        <img src="{% if map.key.name|isin:starred %}/static/starred.png{% else %}/static/unstarred.png{% endif %}" alt="" title="Click to add or remove this map as a favorite." />
+      </a>
+    {% endif %}
+    <a href="/{{map.map_id}}">{{map.name|escape}}</a>
+  </h2>
+  <table class="attribs">
+    <tr><th>Created:</th><td>{{map.created|date_relative}}</td></tr>
+    <tr><td colspan="2" style="text-align: center">
+      {% if map.comment_count %}
+        <a href="/{{map.map_id}}#comments">{% if map.comment_count|equals:1 %}1 comment{% else %}{{map.comment_count}} comments{% endif %}</a>
+      {% else %}
+        &nbsp;
+      {% endif %}
+    </td></tr>
+  </table>
+  <div class="body">
+    <a href="/{{map.map_id}}"><img src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" class="thumb" /></a>
+    <table class="formtable">
+      <tr>
+        <th>Author</th>
+        <td><a href="/user/{{map.user.username|urlencode}}">{{map.user.username|escape}}</a></td>
+      </tr>
+      <tr>
+        <th>Tags</th>
+        <td>
+          {% for tag in map.GetExtendedTags %}
+            {% if tag|isin:query_parts %}
+              <a class="remtag" href="/browse?q={{query_parts|remove_tag:tag|urlencode}}{% if random %}&amp;random=True{% endif %}">{{tag|escape}}</a>
+            {% else %}
+              <a class="addtag" href="/browse?q={{query_parts|add_tag:tag|urlencode}}{% if random %}&amp;random=True{% endif %}">{{tag|escape}}</a>
+            {% endif %}
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <th>Date Added</th>
+        <td>{{map.created|date_relative}}</td>
+      </tr>
+      {% ifnotequal map.created map.lastupdated %}
+        <tr>
+          <th>Last Updated</th>
+          <td>{{map.lastupdated|date_relative}}</td>
+        </tr>
+      {% endifnotequal %}
+      {% if not map.disableratings %}
+        <tr>
+          <th>Rating</th>
+          <td>
+            {% if map.IsRated %}
+              <div class="rated{{map.GetRoundedRating}}">{{map.GetRoundedRating}}</div> by {{map.votes}} {% if map.votes|equals:1 %}person{% else %}people{% endif %}.
+            {% else %}{% if map.user.key|equals:user.key or user.isadmin %}
+              <div class="rated{{map.GetRoundedRating}}">{{map.GetRoundedRating}}</div> by {{map.votes}} {% if map.votes|equals:1 %}person{% else %}people{% endif %}.
+              ({{map.VotesRequired}} more votes required for a public rating.)
+            {% else %}
+              {{map.VotesRequired}} more votes required for a rating.
+            {% endif %}{% endif %}
+          </td>
+        </tr>
+      {% endif %}
+      <tr><th colspan="2"><hr /></th></tr>
+      <tr><th>Description</th><td>{{map.description|truncatewords:50|bbcode}}</td></tr>
+    </table>
+  </div>
+  <div class="clear"></div>
+</div>
+{% if forloop.first %}
+  {% include "adbanner.html" %}
+{% endif %}
+{% endfor %}
+{% if not results %}
+  <div class="section">
+    <h2>No Maps Found.</h2>
+    <div class="body">
+      <p>Sorry, no maps matched your search criteria.</p>
+    </div>
+  </div>
+{% endif %}
+{% if aborted %}
+  <div class="section">
+    <h2>Results Truncated</h2>
+    <div class="body">
+      <p>The results provided above may not be comprehensive. Try making your search
+      more specific.</p>
+    </div>
+  </div>
+{% endif %}
+<div id="browsenext">
+  {% if has_more and not random %}
+    <a href="/browse?q={{query|urlencode}}&amp;start={{start|add:count}}&amp;count={{count}}">Next {{count}}</a>
+  {% else %}
+    &nbsp;
+  {% endif %}
+</div>
+<div id="browseprev">
+  {% if not start|equals:0 and not random %}
+    <a href="/browse?q={{query|urlencode}}&amp;start={{prevstart}}&amp;count={{count}}">Previous {{prevcount}}</a>
+  {% else %}
+    &nbsp;
+  {% endif %}
+</div>
+{% endblock %}

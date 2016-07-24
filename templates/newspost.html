@@ -1,0 +1,25 @@
+{% extends "home_section.html" %}
+{% block title %}New News Post{% endblock %}
+{% block content %}
+  <div class="section">
+    <h2>New News Post</h2>
+    <div class="body">
+      <form method="post" action="/admin/newspost">
+        <table class="formtable">
+          <tr>
+            <th>Title</th>
+            <td><input type="text" name="title" style="width: 40em;" /></td>
+          </tr>
+          <tr>
+            <th>Text</th>
+            <td><textarea name="text" style="width: 40em; height: 20em;"></textarea></td>
+          </tr>
+          <tr>
+            <th></th>
+            <td><input type="submit" value="Submit" /></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+{% endblock %}

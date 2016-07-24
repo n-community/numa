@@ -1,0 +1,4 @@
+To activate your NUMA account, please click on the link below:
+http://www.nmaps.net/verify?username={{user.username|urlencode}}&email_hash={{email_hash}}
+
+Thank you for using NUMA.

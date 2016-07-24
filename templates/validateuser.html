@@ -1,0 +1,25 @@
+{% extends "home_section.html" %}
+{% block title %}Verify Your Account{% endblock title %}
+{% block content %}
+  <div class="section">
+    <h2>Please verify your account</h2>
+    <div class="body">
+      {% if invalid_email %}
+        <div class="error">Please enter a valid email address.</div>
+      {% endif %}
+      {% if email_in_use %}
+        <div class="error">There is already a NUMA account with that email address.</div>
+      {% endif %}
+      <p>To prevent abuse, NUMA requires account validation before you can
+      use your account on NUMA.</p>
+      <p>To do this, please enter your email address below and click 'submit'.
+      This will send an email with a validation link to the address you entered.
+      Click that link to enable your account and begin using NUMA.</p>
+      <p>The only email you will ever recieve from us will be the validation email,
+      and we will never give your email out.</p>
+      <form method="post" action="/verify">
+        <div>Email address: <input type="text" value="" name="email" /> <input type="submit" value="Submit" /></div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

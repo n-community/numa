@@ -1,0 +1,265 @@
+{% extends "maps_section.html" %}
+{% block title %}{{map.name|striptags}} - N Map{% endblock %}
+{% block head %}
+  <!--[if IE 6]>
+    <style type="text/css">
+      .userinfo {margin-left: -70px;}
+    </style>
+  <![endif]-->
+{% endblock %}
+{% block content %}
+  <div class="section" style="z-index: 2;">
+    <h2{% if session.logged_in and user.ismoderator and map.reported %} class="reported"{% endif %}>
+      {% if session.logged_in %}
+        <a class="fave" href="#" onclick="javascript:return starclick(this, {{map.map_id}});">
+          <img src="{% if faved %}/static/starred.png{% else %}/static/unstarred.png{% endif %}" alt="" title="Click to star/unstar this map." />
+        </a>
+      {% endif %}
+      {{map.name|escape}}
+    </h2>
+    {% if session.logged_in %}
+      <div class="attribs">
+        {% ifequal user.key map.user.key %}
+          <a href="/{{map.map_id}}/edit" class="option">Edit</a>
+          {% if not map.moderator_unlisted %}
+            <a href="/{{map.map_id}}/delete" class="option">
+              {% if map.unlisted %}Relist{% else %}Delist{% endif %}
+            </a>
+          {% endif %}
+        {% else %}
+          {% if user.ismoderator %}
+            <a href="/{{map.map_id}}/delete" class="option">
+              {% if map.moderator_unlisted %}
+                Relist
+              {% else %}
+                Delist
+              {% endif %}
+            </a>
+            {% if map.reported %}
+              <a href="#" class="option" onclick="javascript:return clearflag(this, {{map.map_id}});">Not Abusive</a>
+            {% endif %}
+          {% else %}
+            <a href="#" class="option" onclick="javascript:return abusereport(this, {{map.map_id}});">Report Abuse</a>
+          {% endif %}
+          {% if user.canreview and not map.featured_date %}
+            <a href="/{{map.map_id}}/review" class="option">Write Review</a>
+          {% else %}
+            {% if map.featured_by.key|equals:user.key or user.isadmin %}
+              {% if not map.IsFeatured %}
+                <a href="/{{map.map_id}}/review" class="option">Edit Review</a>
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endifequal %}
+      </div>
+    {% endif %}
+    <div class="body">
+    {% if map.unlisted %}
+      <p>This map has been removed from listings{% if not map.moderator_unlisted %} by the author{% endif %}.</p>
+    {% endif %}
+    <div class="levelimage">
+      <img class="thumbnail" style="z-index: 0;" src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" onmouseover="larger(this, 792, 600)" onmouseout="smaller(this, 132, 100)" />
+      <p class="caption">Hover over the thumbnail for a full-size version.</p>
+    </div>
+    <table class="formtable">
+      <tr>
+        <th>Author</th>
+        <td><a href="/user/{{map.user.username|urlencode}}" title="See more information on this user">{{map.user.username|escape}}</a></td>
+      </tr>
+      <tr>
+        <th>Tags</th>
+        <td>
+          {% for tag in map.GetExtendedTags %}
+            <a class="addtag" href="/browse?q={{tag|urlencode}}">{{tag|escape}}</a>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <th>Created</th>
+        <td>{{map.created|date_relative}}</td>
+      </tr>
+      {% ifnotequal map.created map.lastupdated %}
+        <tr>
+          <th>Last Modified</th>
+          <td>{{map.lastupdated|date_relative}}</td>
+        </tr>
+      {% endifnotequal %}
+      {% if not map.disableratings %}
+        <tr>
+          <th>Rating</th>
+          <td>
+            {% if map.IsRated %}
+              <div class="rated{{map.GetRoundedRating}}">{{map.GetRoundedRating}}</div> by {{map.votes}} {% if map.votes|equals:1 %}person{% else %}people{% endif %}.
+            {% else %}{% if map.user.key|equals:user.key or user.isadmin %}
+              <div class="rated{{map.GetRoundedRating}}">{{map.GetRoundedRating}}</div> by {{map.votes}} {% if map.votes|equals:1 %}person{% else %}people{% endif %}.
+              ({{map.VotesRequired}} more votes required for a public rating.)
+            {% else %}
+              {{map.VotesRequired}} more votes required for a rating.
+            {% endif %}{% endif %}
+
+            {% if session.logged_in and user.canvote and not user_has_voted and not map.disableratings and not map.unlisted %}
+              {% ifnotequal user.key map.user.key %}
+                <form method="post" action="/{{map.map_id}}/rate">
+                  <select name="rating">
+                    <option selected="selected" value=""></option>
+                    <option value="0">0 (worthless)</option>
+                    <option value="1">1 (very poor)</option>
+                    <option value="2">2 (below average)</option>
+                    <option value="3">3 (above average)</option>
+                    <option value="4">4 (very good)</option>
+                    <option value="5">5 (flawless)</option>
+                  </select>
+                  <input type="submit" value="Rate" />
+                </form>
+              {% endifnotequal %}
+            {% endif %}
+          </td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>Map Data</th>
+        <td><textarea rows="1" cols="40">{{mapdata|escape}}</textarea></td>
+      </tr>
+      <tr><th colspan="2"><hr /></th></tr>
+      <tr>
+        <th>Description</th>
+        <td>{{map.description|bbcode}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="clear"></div>
+</div>
+{% include "adbanner.html" %}
+{% if show_featured %}
+  <div class="section">
+    {% if future_featured %}
+      <h2>This map will be a featured map.</h2>
+    {% else %}
+      <h2>This map was a featured map on {{map.featured_date|date:"Y-m-d"}}</h2>
+    {% endif %}
+    <div class="body">
+      <p>
+        {{map.featured_text|bbcode}}
+        &mdash; <a href="/user/{{map.featured_by.username|urlencode}}">{{map.featured_by.username|escape}}</a>
+      </p>
+    </div>
+  </div>
+{% endif %}
+{% if other_maps %}
+  <div class="section">
+    <h2>Other maps by this author</h2>
+    <div class="body">
+      <table class="maplist">
+        <tr>
+          {% for omap in other_maps %}
+            <td><a href="/{{omap.map_id}}"><img src="{{omap.image_url}}=s132" alt="Thumbnail of the map '{{omap.name|escape}}'" /></a></td>
+          {% endfor %}
+        </tr>
+        <tr>
+          {% for omap in other_maps %}
+            <td class="caption">{{omap.name|escape}}</td>
+          {% endfor %}
+        </tr>
+      </table>
+    </div>
+  </div>
+{% endif %}
+{% if comments %}
+  <div class="section">
+    <h2><a name="comments">Comments</a></h2>
+      <div class="body">
+        {% if not comment_page_count|equals:1 %}
+          <p>Pages: ({{comment_page_count}})
+            {% for page_start in pages %}
+              {% if page_start %}
+                <a href="/{{map.map_id}}/comments?start={{page_start}}&count={{count}}">{{forloop.counter}}</a>
+              {% else %}
+                [ {{forloop.counter}} ]
+              {% endif %}
+            {% endfor %}
+          </p>
+        {% endif %}
+        {% for comment in comments %}
+          <div class="comment{% if comment.reported and session.logged_in and user.ismoderator %} reported{% endif %}{% if comment.author.key|equals:map.user.key %} authorcomment{% endif %}">
+            <div class="userinfo">
+              <a href="/user/{{comment.author.username|urlencode}}">
+                <img src="{{comment.author.avatar}}" alt="" /><br />
+                {{comment.author.username|escape}}
+              </a>
+            </div>
+            <div class="commentbox">
+              <div class="commenthead">
+                <div class="postinfo">{{comment.lastupdated|date_relative}}</div>
+                <h3><a name="{{comment.key.id}}">{{comment.title|escape}}</a></h3>
+              </div>
+              <div class="commentbody">
+                {{comment.text|bbcode}}
+                {% if comment.demodata %}
+                  <table class="formtable">
+                    <tr>
+                      <th>Demo Data</th>
+                      <td><textarea rows="1" cols="40">{{comment.demodata|escape}}</textarea></td>
+                    </tr>
+                  </table>
+                {% endif %}
+              </div>
+              {% if session.logged_in %}
+                <div class="modlinks">
+                  {% if not user.ismoderator %}
+                    <a href="#" class="option" onclick="javascript:return abusereport(this, {{map.map_id}}, {{comment.key.id}});">Report Abuse</a>
+                  {% else %}
+                    {% if comment.reported %}
+                      <a href="#" class="option" onclick="javascript:return clearflag(this, {{map.map_id}}, {{comment.key.id}});">Not Abusive</a>
+                    {% endif %}
+                    <a href="#" class="option" onclick="javascript:return deletecomment(this, {{map.map_id}}, {{comment.key.id}});">Delete</a>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+        <div id="browseprev">
+          {% if has_more %}
+            <a href="/{{map.map_id}}/comments?start={{count}}&count={{count}}">Previous {{count}} comments</a>
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+      </div>
+  </div>
+{% endif %}
+
+{% if session.logged_in %}
+  <div class="section">
+    <h2>Add a comment</h3>
+    <div class="body">
+      <form method="post" action="/{{map.map_id}}/submit">
+        <table class="formtable">
+          <tr>
+            <td rowspan="4" style="vertical-align: top;"><img src="{{user.avatar}}" alt="" /></td>
+            <th>Title</th>
+            <td><input type="text" name="title" maxlength="255" /></td>
+          </tr>
+          <tr>
+            <th>Comment</th>
+            <td><textarea name="text" rows="5" cols="60"></textarea>
+              <br />
+              Supports <a href="http://www.phpbb.com/community/faq.php?mode=bbcode">BBCode</a>.
+            </td>
+          </tr>
+          <tr>
+            <th>Demo Data (Optional)</td>
+            <td><textarea name="demodata" rows="1" cols="60"></textarea></td>
+          </tr>
+          <tr>
+            <th></th>
+            <td>
+              <input type="submit" value="Submit" />
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

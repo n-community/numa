@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block sections %}
+  <div id="sections">
+	<div id="home"><a href="/"><img src="/static/home-selected.png" alt="Home" /></a></div>
+	<div id="maps"><a href="/browse"><img src="/static/spacer.png" alt="Maps" /></a></div>
+	<div id="profile">
+    <a href="/user"><img src="/static/spacer.png" alt="Profile" /></a>
+	</div>
+	<div id="other"><a href="/other"><img src="/static/spacer.png" alt="Other" /></a></div>
+  </div>
+  <div id="subsections">
+    {% contextual_link / selected %}News{% endlink %}
+    <img src="/static/plusbullet.png" alt="+" />
+    {% contextual_link /about selected %}About{% endlink %}
+    <img src="/static/plusbullet.png" alt="+" />
+    {% contextual_link /faq selected %}FAQ{% endlink %}
+    {% if session.logged_in and user.isadmin %}
+      <img src="/static/plusbullet.png" alt="+" />
+      {% contextual_link /admin/newspost selected %}New News Post{% endlink %}
+    {% endif %}
+    {% if session.logged_in and user.ismoderator %}
+      <img class="bullet" src="/static/plusbullet.png" alt="+" />
+      <a href="/admin/modqueue">Moderation Queue</a>
+    {% endif %}
+  </div>
+{% endblock %}

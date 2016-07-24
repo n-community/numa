@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block sections %}
+  <div id="sections">
+	<div id="home"><a href="/"><img src="/static/spacer.png" alt="Home" /></a></div>
+	<div id="maps"><a href="/browse"><img src="/static/spacer.png" alt="Maps" /></a></div>
+	<div id="profile">
+    <a href="/user"><img src="/static/spacer.png" alt="Profile" /></a>
+	</div>
+	<div id="other"><a href="/other"><img src="/static/other-selected.png" alt="Other" /></a></div>
+  </div>
+  <div id="subsections">
+	{% contextual_link /whoswho selected %}Who's Who{% endlink %}
+	<img src="/static/plusbullet.png" alt="+" />
+	{% contextual_link /sundayn selected %}Sunday N{% endlink %}
+	<img src="/static/plusbullet.png" alt="+" />
+	<a href="http://www.harveycartel.org/metanet/n.html">N Homepage</a>
+	<img src="/static/plusbullet.png" alt="+" />
+	<a href="http://forum.ninjarobotyeti.com/">Forums</a>
+	<img src="/static/plusbullet.png" alt="+" />
+	<a href="https://addons.mozilla.org/en-US/firefox/addon/4659">Firefox Extension</a>
+  </div>
+{% endblock %}

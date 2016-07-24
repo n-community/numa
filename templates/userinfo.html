@@ -1,0 +1,95 @@
+{% extends "profile_section.html" %}
+{% block title %}User information for "{{profile_user.username|escape}}"{% if profile_user.title %}, {{profile_user.title}}{% endif %}{% if attributes %} ({{attributes}}){% endif %}{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>User information for "{{profile_user.username|escape}}"{% if profile_user.title %}, {{profile_user.title}}{% endif %}{% if attributes %} ({{attributes}}){% endif %}</h2>
+  {% if canmodify %}
+    <div class="attribs">
+      <a class="option" href="/user/{{profile_user.username|urlencode}}/edit">Edit Settings</a>
+    </div>
+  {% endif %}
+  <div class="body">
+    <table class="formtable">
+      <tr>
+        <th>Avatar</th>
+        <td><img src="{{profile_user.avatar}}" alt="" /></td>
+      </tr>
+      <tr>
+        <th>Maps</th>
+        <td><a href="/browse?q=author:{{profile_user.username|urlencode}}">{{profile_user.map_count}} (Show all)</a></td>
+      </tr>
+      <tr>
+        <th>Rated Maps</th>
+        <td><a href="/browse?q=author:{{profile_user.username|urlencode}}+rated">{{profile_user.rated_map_count}} (Show all)</a></td>
+      </tr>
+      <tr>
+        <th>Favorites</th>
+        <td><a href="/browse?q=favorites:{{profile_user.username|urlencode}}">{{profile_user.favourite_count}} (Show all)</a></td>
+      </tr>
+      {% if profile_user.featured_map_count %}
+        <tr>
+          <th>Featured Maps</th>
+          <td><a href="/browse?q=featured+author:{{profile_user.username|urlencode}}">{{profile_user.featured_map_count}} (Show all)</a></td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>Map Ratings</th>
+        <td><img src="{{profile_user.GetRatingHistogramURL}}" alt="" /></td>
+      </tr>
+      <tr>
+        <th>Total Ratings</th>
+        <td>{{profile_user.ratings}}</td>
+      </tr>
+      {% if canmodify and profile_user.email %}
+        <tr>
+          <th>Email Address<br />(Only visible to admins)</th>
+          <td>{{profile_user.email|escape}}</td>
+        </tr>
+      {% endif %}
+    </table>
+    {% if profile_user.profile %}
+      <h1>Profile</h1>
+      <p>{{profile_user.profile|bbcode}}</p>
+    {% endif %}
+  </div>
+</div>
+{% include "adbanner.html" %}
+{% if maps %}
+  <div class="section">
+    <h2>Recent Maps</h2>
+    <div class="body">
+      <table class="maplist">
+        <tr>
+          {% for map in maps %}
+            <td><a href="/{{map.map_id}}"><img src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" /></a></td>
+          {% endfor %}
+        </tr>
+        <tr>
+          {% for map in maps %}
+            <td class="caption">{{map.name|escape}}</td>
+          {% endfor %}
+        </tr>
+      </table>
+    </div>
+  </div>
+{% endif %}
+{% if favorites %}
+  <div class="section">
+    <h2>Recent Favorites</h2>
+    <div class="body">
+      <table class="maplist">
+        <tr>
+          {% for map in favorites %}
+            <td><a href="/{{map.map_id}}"><img src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" /></a></td>
+          {% endfor %}
+        </tr>
+        <tr>
+          {% for map in favorites %}
+            <td class="caption">{{map.name|escape}}</td>
+          {% endfor %}
+        </tr>
+      </table>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

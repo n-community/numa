@@ -1,0 +1,44 @@
+{% extends "maps_section.html" %}
+{% block title %}
+  {% if map.unlisted %}
+    Relist Map
+  {% else %}
+    Delist Map
+  {% endif %}
+  '{{map.name|striptags}}' - N Map
+{% endblock %}
+{% block content %}
+<div class="section">
+  <form method="post" action="/{{map.map_id}}/delete">
+    {% if show_delist %}
+      <h2>Delist Map</h2>
+      <div class="body">
+        <p>Are you sure you want to delist this map? Delisting this map will not
+        delete it, but it will no longer show up in listings and search results.
+        Users will only be able to find your map if they already know the map number.
+        This map will still show up in users' favorites.</p>
+        <input type="submit" name="delist" value="Yes, delist this map" />
+        <input type="submit" name="cancel" value="Cancel" />
+      </div>
+    {% else %}
+      {% if show_moddelist %}
+        <h2>Delist Map</h2>
+        <div class="body">
+          <p>This map has been delisted by the author. Do you want to prevent them
+          from relisting it?</p>
+          <input type="submit" name="delist" value="Yes" />
+          <input type="submit" name="cancel" value="Cancel" />
+        </div>
+      {% else %}
+        <h2>Relist Map</h2>
+        <div class="body">
+          <p>Are you sure you want to relist this map? Relisting will make this map
+          visible in map listings and searches again.</p>
+          <input type="submit" name="relist" value="Yes, relist this map" />
+          <input type="submit" name="cancel" value="Cancel" />
+        </div>
+      {% endif %}
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

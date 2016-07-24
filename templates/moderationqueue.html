@@ -1,0 +1,78 @@
+{% extends "admin_section.html" %}
+{% block title %}Moderation Queue{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>NUMA moderation queue</h2>
+  <div class="body">
+    {% if maps %}
+      <h2>Maps</h2>
+      {% for map in maps %}
+        <h3>
+          {{map.name}}
+          <a href="/{{map.map_id}}/delete" class="option">Delist</a>
+          <a href="#" class="option" onclick="javascript:return clearflag(this, {{map.map_id}});">Not Abusive</a>
+        </h3>
+        <a href="/{{map.map_id}}"><img src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" class="thumbnail" /></a>
+        <table class="formtable">
+          <tr>
+            <th>Author</th>
+            <td>{{map.user.username|escape}}</td>
+          </tr>
+          <tr>
+            <th>Tags</th>
+            <td>
+              {% for tag in map.GetExtendedTags %}
+                <a class="addtag" href="/browse?q={{tag|urlencode}}">{{tag|escape}}</a>
+              {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <th>Date Added</th>
+            <td>{{map.created|date:"l j F Y, h:iA"}}</td>
+          </tr>
+          {% ifnotequal map.created map.lastupdated %}
+            <tr>
+              <th>Last Updated</th>
+              <td>{{map.lastupdated|date:"l j F Y, h:iA"}}</td>
+            </tr>
+          {% endifnotequal %}
+          <tr>
+            <th>Rating</th>
+            <td>
+              {% if map.IsRated %}
+                <img src="/static/{{map.GetRoundedRating}}n.png" alt="{{map.GetRoundedRating}}" /> by {{map.votes}} people.
+              {% else %}
+                <img src="/static/{{map.GetRoundedRating}}n.png" alt="{{map.GetRoundedRating}}" /> by {{map.votes}} people.
+                ({{map.VotesRequired}} more votes required for a public rating.)
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td>{{map.description|escape}}</td>
+          </tr>
+        </table>
+      {% endfor %}
+    {% endif %}
+    {% if comments %}
+      <h2>Comments</h2>
+      {% for comment in comments %}
+        <div class="comment">
+          <h3>
+            <a href="/{{comment.parent.map_id}}#{{comment.key.id}}">{{comment.title|escape}}</a>
+            <a href="#" class="option" onclick="javascript:return clearflag(this, {{comment.parent.map_id}}, {{comment.key.id}});">Not Abusive</a>
+            <a href="#" class="option" onclick="javascript:return deletecomment(this, {{comment.parent.map_id}}, {{comment.key.id}});">Delete</a>
+            <span class="postinfo">{{comment.lastupdated}}</span>
+          </h3>
+          <span class="authorname"><a href="/user/{{comment.author.username|urlencode}}">{{comment.author.username|escape}}</a></span>
+          <p>{{comment.text|bbcode}}</p>
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% if not maps and not comments %}
+      <p>There's nothing to moderate right now. Good job!</p>
+    {% endif %}
+  </div>
+  <div class="clear"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "home_section.html" %}
+{% block head %}
+  <link rel="alternate" type="application/atom+xml" href="/news.atom" />
+{% endblock %}
+{% block title %}Home{% endblock %}
+{% block content %}
+  <div class="section">
+    <h2>
+      {% if session.logged_in %}
+        <a class="fave" href="#" onclick="javascript:return starclick(this, {{featured.map_id}});">
+          <img src="{% if faved %}/static/starred.png{% else %}/static/unstarred.png{% endif %}" alt="" title="Click to star/unstar this map." />
+        </a>
+      {% endif %}
+      Featured Map: <a href="/{{featured.map_id}}">{{featured.name}}</a>
+      by <a href="/user/{{featured.user.username|urlencode}}">{{featured.user.username}}</a>
+    </h2>
+    <div class="body">
+      <a href="/{{featured.map_id}}"><img src="{{featured.image_url}}=s132" alt="Thumbnail of the map '{{featured.name|escape}}'" class="thumb" /></a>
+      <p>
+        {{featured.featured_text|bbcode}}
+        &mdash; <a href="/user/{{featured.featured_by.username|urlencode}}">{{featured.featured_by.username|escape}}</a>
+      </p>
+    </div>
+    <div class="clear"></div>
+  </div>
+  {% include "adbanner.html" %}
+  {% for item in newsitems %}
+    <div class="section">
+      <h2>{{item.title}}</h2>
+      <table class="attribs">
+        <tr><th>Posted:</th><td>{{item.lastupdated|date_relative}}</td></tr>
+      </table>
+      <div class="body">
+        {{item.text|bbcode}}
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}

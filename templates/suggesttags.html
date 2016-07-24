@@ -1,0 +1,5 @@
+<table id="suggestable">
+  {% for tag in tags %}
+    <tr><td><a href="javascript:suggestclick('{{tag|escape}}');">{{tag|escape}}</a></td></tr>
+  {% endfor %}
+</table>

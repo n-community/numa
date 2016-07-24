@@ -1,0 +1,27 @@
+{% extends "other_section.html" %}
+{% block title %}The Sunday N{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>Sunday N Comments</h2>
+  <div class="body">
+    <p style="text-align: center;">
+      <img src="/static/sundaynheader.png" alt="The Sunday N" />
+      <br />
+      by <a href="/user/KinGAleX">Alex Kurcharski</a>,
+      featuring <a href="/user/rennaT">Tanner Rogalsky</a>
+      and <a href="/user/Kablizzy">Matt Blaylock</a>
+    </p>
+    <p style="text-align: center;">
+      <strong><a href="/sundayn/{{sundayn.number}}">Back to issue {{sundayn.number}}</a></strong>
+    </p>
+    <h1>Feedback</h1>
+    {% for comment in comments %}
+      <div class="comment">
+        <h3>{{comment.title|escape}}</h3>
+        <span class="authorname"><a href="/user/{{comment.author.username|urlencode}}">{{comment.author.username|escape}}</a></span>
+        <p>{{comment.text|escape|urlize|linebreaksbr}}</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

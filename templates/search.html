@@ -1,0 +1,70 @@
+{% extends "maps_section.html" %}
+{% block title %}Advanced Search{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>Advanced Search</h2>
+  <div class="body">
+    <form method="get" action="/search">
+      <table>
+        <tr>
+          <th>Find maps that have...</th>
+          <td></td>
+          <td><input type="submit" value="Search" /></td>
+        </tr>
+        <tr>
+          <td>all these tags:</td>
+          <td><input type="text" name="tags" style="width: 30em;" /></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>by this author:</td>
+          <td><input type="text" name="author" style="width: 30em;" /></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>favorited by these users:</td>
+          <td><input type="text" name="favorite" style="width: 30em;" /></td>
+          <td></td>
+        </tr>
+        
+        <tr><td colspan="3">&nbsp;</td></tr>
+        <tr><th>But don't show maps that have...</th><td colspan="2"></td></tr>
+        <tr>
+          <td>any of these tags:</td>
+          <td><input type="text" name="not_tags" style="width: 30em;" /></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>by any of these authors:</td>
+          <td><input type="text" name="not_authors" style="width: 30em;" /></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>favorited by any of these users:</td>
+          <td><input type="text" name="not_starred" style="width: 30em;" /></td>
+          <td></td>
+        </tr>
+
+        <tr><td colspan="3">&nbsp;</td></tr>
+        <tr>
+          <td>include:</td>
+          <td><select name="rated">
+            <option selected="selected" value="">rated and unrated</option>
+            <option value="rated">rated only</option>
+            <option value="unrated">unrated only</option>
+          </select></td>
+        </tr>
+        <tr>
+          <td>maps per page:</td>
+          <td><select name="count">
+            <option selected="selected" value="10">10 maps</option>
+            <option value="20">20 maps</option>
+            <option value="50">50 maps</option>
+          </select></td>
+        </tr>
+      </table>
+    </form>
+    <p>All fields are optional.</p>
+  </div>
+</div>
+{% endblock %}

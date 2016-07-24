@@ -1,0 +1,56 @@
+{% extends "maps_section.html" %}
+{% block title %}Confirm Map Submission{% endblock %}
+{% block content %}
+  <div class="section">
+    <h2>Confirm Map Submission</h2>
+    <div class="body">
+      <p>Please confirm all the values you entered are correct.</p>
+      <form method="post" action="/submit">
+        <input type="hidden" name="confirm" value="true" />
+        <table class="formtable">
+          <tr>
+            <td>Map Name</td>
+            <td>
+              <input type="hidden" name="name" value="{{name|escape}}" />
+              {{name|escape}}
+            </td>
+          </tr>
+          <tr>
+            <td>Tags</td>
+            <td>
+              {% for tag in tags %}{{tag|escape}}<input type="hidden" name="tags" value="{{tag|escape}}"/> {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <td>Description</td>
+            <td>
+              <input type="hidden" name="description" value="{{description|escape}}" />
+              {{description|escape}}
+            </td>
+          </tr>
+          <tr>
+            <td>Map</td>
+            <td>
+              <div class="levelimage">
+                <a href="/preview?mapdata={{compresseddata|urlencode}}=s762" target="top">
+                  <img class="thumbnail" style="z-index: 0;" src="/preview?thumb=t&amp;mapdata={{compresseddata|urlencode}}=s762" alt="Thumbnail of submission" />
+                </a>
+                <p class="caption">Click on the image for a full-size version.</p>
+              </div>
+              <p style="clear: left;">Please check your map to ensure it looks exactly as expected before submitting it.</p>
+              <input type="hidden" name="mapdata" value="{{mapdata|escape}}" />
+            </td>
+          </tr>
+          <tr>
+            <td></td><td><input type="checkbox" name="disableratings" value="true" {% if disableratings %}checked="checked"{% endif %} /> Disable ratings on this map</td></tr>
+          <tr>
+          <tr>
+            <td></td>
+            <td><input type="submit" value="Confirm" /></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div class="clear"></div>
+  </div>
+{% endblock %}

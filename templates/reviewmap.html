@@ -1,0 +1,79 @@
+{% extends "maps_section.html" %}
+{% block title %}Writing review for "{{map.name|striptags}}"{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>{{map.name|escape}}</h2>
+  <div class="body">
+    <div class="levelimage">
+      <img class="thumbnail" style="z-index: 0;" src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" onmouseover="larger(this, 792, 600)" onmouseout="smaller(this, 132, 100)" />
+      <p class="caption">Hover over the thumbnail for a full-size version.</p>
+    </div>
+    <table class="formtable">
+      <tr>
+        <th>Author</th>
+        <td><a href="/user/{{map.user.username|urlencode}}" title="See more information on this user">{{map.user.username|escape}}</a></td>
+      </tr>
+      <tr>
+        <th>Tags</th>
+        <td>
+          {% for tag in map.GetExtendedTags %}
+            <a class="addtag" href="/browse?q={{tag|urlencode}}">{{tag|escape}}</a>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <th>Date Added</th>
+        <td>{{map.created|date:"l j F Y, h:iA"}}</td>
+      </tr>
+      {% ifnotequal map.created map.lastupdated %}
+        <tr>
+          <th>Last Modified</th>
+          <td>{{map.lastupdated|date:"l j F Y, h:iA"}}</td>
+        </tr>
+      {% endifnotequal %}
+      {% if not map.disableratings %}
+        <tr>
+          <th>Rating</th>
+          <td>
+            {% if map.IsRated %}
+              <img src="/static/{{map.GetRoundedRating}}n.png" alt="{{map.GetRoundedRating}}" /> by {{map.votes}} people.
+            {% else %}{% if map.user.key|equals:user.key or user.isadmin %}
+              <img src="/static/{{map.GetRoundedRating}}n.png" alt="{{map.GetRoundedRating}}" /> by {{map.votes}} people.
+              ({{map.VotesRequired}} more votes required for a public rating.)
+            {% else %}
+              {{map.VotesRequired}} more votes required for a rating.
+            {% endif %}{% endif %}
+          </td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>Description</th>
+        <td>{{map.description|bbcode}}</td>
+      </tr>
+    </table>
+    <h2 style="clear: both;">Review</h2>
+    <p>
+      Enter the text of your review of this map below.
+      Reviews should be between 50 and 100 words long. Do not include your own name
+      at the end - it will be added automatically.
+    </p>
+    {% if error %}
+      <p class="error">{{error}}</p>
+    {% endif %}
+    <form method="post" action="/{{map.map_id}}/review">
+      {% if user.isadmin and map.featured_date %}
+        Review date: <input type="text" name="review_date" value="{{map.featured_date|date:"Y-m-d H:i:s"}}" /><br />
+      {% endif %}
+      <textarea name="review" style="width: 555px; height: 150px;">{{review}}</textarea>
+      <br />
+      Supports <a href="http://www.phpbb.com/community/faq.php?mode=bbcode">BBCode</a>.
+      <br />
+      <input type="submit" value="Submit" />
+      {% if review %}
+        <input type="submit" name="delete" value="Delete Review" />
+      {% endif %}
+    </form>
+  </div>
+  <div class="clear"></div>
+</div>
+{% endblock %}

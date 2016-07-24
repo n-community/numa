@@ -1,0 +1,72 @@
+{% extends "profile_section.html" %}
+{% block title %}User information for "{{profile_user.username|escape}}"{% endblock %}
+{% block content %}
+  <div class="section">
+    <h2>User information for "{{profile_user.username|escape}}"{% if profile_user.title %}, {{profile_user.title}}{% endif %}</h2>
+    <div class="body">
+      <form method="post" action="/user/{{profile_user.username|urlencode}}" enctype="multipart/form-data">
+      <table class="formtable">
+        <tr>
+          <th>Avatar</th>
+          <td>
+            <img src="{{profile_user.avatar}}" alt="" /><br />
+            <input type="file" name="avatar_img" />
+          </td>
+        <tr>
+          <th>Email Address<br />(Only visible to admins)</th>
+          <td><input type="text" name="email" value="{{profile_user.email|escape}}" /></td>
+        </tr>
+        <tr>
+          <th>Profile</th>
+          <td>
+            <textarea name="profile" style="width: 30em; height: 20em;">{% if profile_user.profile %}{{profile_user.profile|escape}}{% endif %}</textarea>
+          </td>
+        </tr>
+        {% if user.isadmin %}
+          <tr>
+            <th>User Disabled?</th>
+            <td><input type="checkbox" name="isdisabled" {% if profile_user.isdisabled %}checked="checked"{% endif %} /></td>
+          </tr>
+          <tr>
+            <th>Reason for disablement</th>
+            <td><textarea name="disabled_why" style="width: 20em; height: 5em;">{% if profile_user.disabled_why %}{{profile_user.disabled_why}}{% endif %}</textarea></td>
+          </tr>
+          <tr>
+            <th>Disable for (days)</th>
+            <td><input type="text" name="disabled_time" value="{% if profile_user.disabled_until %}{{disable_days}}{% endif %}" /></td>
+          </tr>
+          <tr>
+            <th>User Can Vote?</th>
+            <td><input type="checkbox" name="canvote" {% if profile_user.canvote %}checked="checked"{% endif %} /></td>
+          </tr>
+          <tr>
+            <th>Reviewer?</th>
+            <td><input type="checkbox" name="canreview" {% if profile_user.canreview %}checked="checked"{% endif %} /></td>
+          </tr>
+          <tr>
+            <th>Email Address Validated?</th>
+            <td><input type="checkbox" name="validated" {% if profile_user.validated %}checked="checked"{% endif %} /></td>
+          </tr>
+          <tr>
+            <th>Moderator?</th>
+            <td><input type="checkbox" name="ismoderator" {% if profile_user.ismoderator %}checked="checked"{% endif %} /></td>
+          </tr>
+          <tr>
+            <th>Admin?</th>
+            <td><input type="checkbox" name="isadmin" {% if profile_user.isadmin %}checked="checked"{% endif %} /></td>
+          </tr>
+          <tr>
+            <th>Ad Free?</th>
+            <td><input type="checkbox" name="adfree" {% if profile_user.adfree %}checked="checked"{% endif %}</td>
+          </tr>
+          <tr>
+            <th>Custom Title</th>
+            <td><input type="text" name="title" value="{% if profile_user.title %}{{profile_user.title}}{% endif %}" /></td>
+          </tr>
+        {% endif %}
+      </table>
+      <input type="submit" value="Update" />
+      </form>
+    </div>
+  </div>
+{% endblock %}

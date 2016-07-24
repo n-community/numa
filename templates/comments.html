@@ -1,0 +1,78 @@
+{% extends "maps_section.html" %}
+{% block title %}Comments on {{map.name|escape}} - N Map{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>Comments on "{{map.name|escape}}"</h2>
+  <div class="body">
+    <p>Pages: ({{comment_page_count}})
+      {% for page_start in pages %}
+        {% if page_start %}
+          <a href="/{{map.map_id}}/comments?start={{page_start}}&count={{count}}">{{forloop.counter}}</a>
+        {% else %}
+          [ {{forloop.counter}} ]
+        {% endif %}
+      {% endfor %}
+    </p>
+    {% for comment in comments %}
+      <div class="comment{% if comment.reported and session.logged_in and user.ismoderator %} reported{% endif %}">
+        <div class="userinfo">
+          <a href="/user/{{comment.author.username|urlencode}}">
+            <img src="{{comment.author.avatar}}" alt="" /><br />
+            {{comment.author.username|escape}}
+          </a>
+        </div>
+        <div class="commentbox">
+          <div class="commenthead">
+            <div class="postinfo">{{comment.lastupdated|date_relative}}</div>
+            <h3><a name="{{comment.key.id}}">{{comment.title|escape}}</a></h3>
+          </div>
+          <div class="commentbody">
+            {{comment.text|bbcode}}
+            {% if comment.demodata %}
+              <table class="formtable">
+                <tr>
+                  <th>Demo Data</th>
+                  <td><textarea rows="1" cols="40">{{comment.demodata|escape}}</textarea></td>
+                </tr>
+              </table>
+            {% endif %}
+          </div>
+          {% if session.logged_in %}
+            <div class="modlinks">
+              {% if not user.ismoderator %}
+                <a href="#" class="option" onclick="javascript:return abusereport(this, {{map.map_id}}, {{comment.key.id}});">Report Abuse</a>
+              {% else %}
+                {% if comment.reported %}
+                  <a href="#" class="option" onclick="javascript:return clearflag(this, {{map.map_id}}, {{comment.key.id}});">Not Abusive</a>
+                {% endif %}
+                <a href="#" class="option" onclick="javascript:return deletecomment(this, {{map.map_id}}, {{comment.key.id}});">Delete</a>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% if forloop.first %}
+        {% include "adbanner.html" %}
+      {% endif %}
+    {% endfor %}
+    <div id="browseprev">
+      {% if has_more %}
+        <a href="/{{map.map_id}}/comments?start={{start|add:count}}&count={{count}}">Previous {{count}} comments</a>
+      {% else %}
+        &nbsp;
+      {% endif %}
+    </div>
+    <div id="browsenext">
+      {% if not start|equals:0 %}
+        {% if prevstart|equals:0 %}
+          <a href="/{{map.map_id}}">Next {{prevcount}} comments</a>
+        {% else %}    
+          <a href="/{{map.map_id}}/comments?&start={{prevstart}}&count={{count}}">Next {{prevcount}} comments</a>
+        {% endif %}
+      {% else %}
+        &nbsp;
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

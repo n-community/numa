@@ -1,0 +1,22 @@
+{% extends "home_section.html" %}
+{% block title %}User Disabled{% endblock %}
+{% block content %}
+  <div class="section">
+    <h2>User Disabled</h2>
+    <div class="body">
+      <p>
+        Your user account has been disabled.
+        {% if user.disabled_why %}
+          The reason given was:
+            <blockquote>{{user.disabled_why}}</blockquote>
+        {% else %}
+          This is usually due to abuse of some form.
+        {% endif %}
+        {% if user.disabled_until %}
+          Your account will be re-enabled in {{user.disabled_until|date_relative}}.
+        {% endif %}
+        If you believe your account was disabled in error, please contact numa@notdot.net.
+      </p>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "maps_section.html" %}
+{% block head %}
+  <link rel="alternate" type="application/atom+xml" href="/featured.atom" />
+{% endblock %}
+{% block title %}{% if future %}Upcoming {% endif %}Featured Maps{% endblock %}
+{% block content %}
+  <div class="emptysection">
+    <h2>{% if future %}Upcoming {% endif %}Featured Maps: {{start|add:1}} to {{count}}</h2>
+  </div>
+  {% for map in results %}
+    <div class="section">
+      <h2>
+        {% if session.logged_in %}
+          <a class="fave" href="#" onclick="javascript:return starclick(this, {{map.map_id}});">
+            <img src="{% if map.key.name|isin:starred %}/static/starred.png{% else %}/static/unstarred.png{% endif %}" alt="Click to star/unstar this map." />
+          </a>
+        {% endif %}
+        Featured map {% if map.IsFeatured %}for {{map.featured_date|date:"Y-m-d"}}{% endif %}: 
+        <a href="/{{map.map_id}}">{{map.name|escape}}</a>
+        by <a href="/user/{{map.user.username|urlencode}}">{{map.user.username|escape}}</a>
+      </h2>
+      <div class="body">
+        <a href="/{{map.map_id}}"><img src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" class="thumb" /></a>
+        <p>
+          {{map.featured_text|bbcode}}
+          &mdash; <a href="/user/{{map.featured_by.username|urlencode}}">{{map.featured_by.username|escape}}</a>
+        </p>
+      </div>
+      <div class="clear"></div>
+    </div>
+    {% if forloop.first %}
+      {% include "adbanner.html" %}
+    {% endif %}
+  {% endfor %}
+  <div id="browsenext">
+    {% if has_more %}
+      <a href="/featured?start={{start|add:count}}&count={{count}}{% if future %}&future=True{% endif %}">Next {{count}}</a></div>
+    {% else %}
+      &nbsp;
+    {% endif %}
+  </div>
+  <div id="browseprev">
+    {% if not start|equals:0 %}
+      <a href="/authors?start={{prevstart}}&count={{count}}{% if future %}&future=True{% endif %}">Previous {{prevcount}}</a></div>
+    {% else %}
+      &nbsp;
+    {% endif %}
+  </div>
+{% endblock %}

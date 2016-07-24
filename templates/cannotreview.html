@@ -1,0 +1,16 @@
+{% extends "maps_section.html" %}
+{% block title %}Cannot create or edit review for "{{map.name|striptags}}"{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>Cannot create or edit review for "{{map.name|escape}}"</h2>
+  <div class="body">
+    {% if map.IsFeatured %}
+      <p>This review has already gone live; you cannot edit or delete it.</p>
+    {% else %}
+      <p>Sorry, this map has already been reviewed by someone else.</p>
+    {% endif %}
+    <p><a href="/map/{{map.map_id}}">Back to the map</a></p>
+  </div>
+  <div class="clear"></div>
+</div>
+{% endblock %}

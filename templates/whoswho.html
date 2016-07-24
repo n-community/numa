@@ -1,0 +1,50 @@
+{% extends "other_section.html" %}
+{% block title %}Who's who on NUMA{% endblock %}
+{% block content %}
+<div class="section">
+  <h2>Who's who on NUMA</h2>
+  <div class="body">
+    <h3>Admins</h3>
+    <p>These are the people that keep the site running. If something goes drastically wrong, it's either
+    their fault, or they're fixing it. Or both.</p>
+    <div>
+      {% for u in admins %}
+        <div class="userbox">
+          <a href="/user/{{u.username|urlencode}}">
+            <img src="{{u.avatar}}" alt="" /><br />
+            {{u.username|escape}}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+    <h3>Moderators</h3>
+    <div>
+      <p>Moderators serve a crucial role on NUMA, by keeping an eye on what's going on, keeping things
+      calm, and cleaning up the mess when things aren't so calm.</p>
+      {% for u in mods %}
+        <div class="userbox">
+          <a href="/user/{{u.username|urlencode}}">
+            <img src="{{u.avatar}}" alt="" /><br />
+            {{u.username|escape}}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+    <h3>Reviewers</h3>
+    <div>
+      <p>Reviewers are the people with the power to create new featured maps. They have an exceptional
+      grasp of the written word, which they use for the good of all by finding and reviewing the best
+      maps NUMA has to offer.</p>
+      {% for u in reviewers %}
+        <div class="userbox">
+          <a href="/user/{{u.username|urlencode}}">
+            <img src="{{u.avatar}}" alt="" /><br />
+            {{u.username|escape}}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="clear"></div>
+</div>
+{% endblock %}

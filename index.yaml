@@ -1,0 +1,119 @@
+indexes:
+
+# For mapreducing maps (heh!)
+- kind: Map
+  properties:
+  - name: user
+  - name: __key__
+
+- kind: Favorite
+  ancestor: yes
+  properties:
+  - name: __key__
+
+# "Recent comments" on user profile page
+- kind: Comment
+  properties:
+  - name: author
+  - name: lastupdated
+    direction: desc
+
+# Comments listing on map pages
+- kind: Comment
+  ancestor: yes
+  properties:
+  - name: lastupdated
+    direction: desc
+
+# For admin interface - flagged posts and flagged maps.
+- kind: Comment
+  properties:
+  - name: reported
+  - name: lastupdated
+    direction: desc
+
+- kind: Map
+  properties:
+  - name: reported
+  - name: created
+    direction: desc
+
+# Indexes used by search query planner
+- kind: Map
+  properties:
+  - name: unlisted
+  - name: float_num
+    direction: desc
+
+- kind: Map
+  properties:
+  - name: unlisted
+  - name: tags
+  - name: float_num
+    direction: desc
+
+- kind: Map
+  properties:
+  - name: unlisted
+  - name: random
+    direction: asc
+
+- kind: Map
+  properties:
+  - name: unlisted
+  - name: tags
+  - name: random
+    direction: asc
+
+# Used to retrieve stats on tags and tag combinations in query planner
+# and elsewhere.
+- kind: Tag
+  properties:
+  - name: reccommend
+  - name: count
+    direction: desc
+
+- kind: Tag
+  properties:
+  - name: reccommend
+  - name: name
+    direction: desc
+
+- kind: TagJoin
+  properties:
+  - name: prefix
+  - name: count
+    direction: desc
+
+- kind: TagJoin
+  properties:
+  - name: prefix
+  - name: tag
+
+# Used to retrieve favorite lists in the query planner.
+- kind: Favorite
+  ancestor: yes
+  properties:
+  - name: map_id
+    direction: desc
+
+# "Recent Favorites" on user profile page.
+- kind: Favorite
+  ancestor: yes
+  properties:
+  - name: added
+    direction: desc
+
+# Used for 'maps with unread comments'
+- kind: Map
+  properties:
+  - name: user
+  - name: first_unread_comment
+
+# 'Recent maps' listings
+- kind: Map
+  properties:
+  - name: user
+  - name: unlisted
+  - name: float_num
+    direction: desc

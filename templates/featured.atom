@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>NUMA Featured Maps</title>
+  <link rel="alternate" href="http://nmaps.net/featured" />
+  <link rel="self" href="http://nmaps.net/featured.atom" />
+  <updated>{{updated.isoformat}}Z</updated>
+  <author>
+    <name>Nick Johnson</name>
+    <email>numa@notdot.net</email>
+  </author>
+  <id>tag:nmaps.net,2008-05-06:featured</id>
+
+  {% for map in results %}
+    <entry>
+      <title>{{map.name}}</title>
+      <link rel="alternate" type="text/html" href="http://nmaps.net/{{map.map_id}}" />
+      <id>tag:nmaps.net,2008-05-06:map/{{map.map_id}}</id>
+      <published>{{map.created.isoformat}}Z</published>
+      {% if map.updated and not map.updated|equals:map.created %}
+        <updated>{{map.updated.isoformat}}Z</updated>
+      {% else %}
+        <updated>{{map.created.isoformat}}Z</updated>
+      {% endif %}
+      <author>
+        <name>{{map.user.username}}</name>
+        <uri>http://nmaps.net/user/{{map.user.username|escape}}</uri>
+      </author>
+      <content type="application/xhtml+xml" src="http://nmaps.net/{{map.map_id}}" />
+      <summary type="xhtml" xml:lang="en">
+        <div xmlns="http://www.w3.org/1999/xhtml">{{map.featured_text|bbcode}}</div>
+      </summary>
+    </entry>
+  {% endfor %}
+</feed>
