@@ -80,7 +80,7 @@ function tagchange(tag, prefix) {
 			currentDiv.innerHTML = request.responseText;
 			currentDiv.childNodes[0].style.left = tag.offsetLeft + "px";
 			currentDiv.childNodes[0].style.top = tag.offsetTop + tag.offsetHeight + "px";
-			tagDialog.appendChild(currentDiv); 
+			tagDialog.appendChild(currentDiv);
 			request = null;
 		}
 	};
@@ -204,4 +204,41 @@ function smaller(img, width, height) {
     setZoom(img, 'ltr', w, h, i, 20*(now-i));
   }
   setThumb(img, 'ltr', "thumbs", 20*(now+1));
+}
+
+// feature queue rearranging
+
+function swap_down(node) {
+  const node1 = node.parentElement.parentElement;
+  const node2 = node.parentElement.parentElement.nextElementSibling;
+  const map_id_1 = node1.dataset.id;
+  const map_id_2 = node2.dataset.id;
+
+  const callback = function (response) {
+    node1.parentNode.replaceChild(node1, node2);
+    node1.parentNode.insertBefore(node2, node1);
+  }
+
+  url = "/" + map_id_1 + "/swap"
+  data = "other_map_id=" + map_id_2;
+  ajaxRequest(url, data, callback);
+  return false;
+}
+
+function swap_up(node) {
+  const node1 = node.parentElement.parentElement.previousElementSibling;
+  const node2 = node.parentElement.parentElement;
+  const map_id_1 = node1.dataset.id;
+  const map_id_2 = node2.dataset.id;
+
+  const callback = function (response) {
+    debugger
+    node1.parentNode.replaceChild(node1, node2);
+    node1.parentNode.insertBefore(node2, node1);
+  }
+
+  url = "/" + map_id_2 + "/swap"
+  data = "other_map_id=" + map_id_1;
+  ajaxRequest(url, data, callback);
+  return false;
 }

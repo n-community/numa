@@ -2,6 +2,7 @@ from google.appengine._internal.django import template
 import datetime
 import urllib
 import logging
+import json
 
 import postmarkup
 
@@ -18,6 +19,11 @@ def equals(value, arg):
 @register.filter(name='sub')
 def sub(value, arg):
   return value-arg
+
+@register.filter(name='to_json')
+def to_json(value):
+  import pdb; pdb.set_trace()
+  return json.dumps(value)
 
 @register.filter(name="date_relative")
 def date_relative(value):
