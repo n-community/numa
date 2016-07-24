@@ -488,3 +488,33 @@ dd {
   font-size: 10px;
   text-align: center;
 }
+
+.arrows {
+  float: right;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+.swap-up {
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  content: url('up-white.svg');
+}
+
+.swap-down {
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  content: url('down-white.svg');
+}
+
+.swap-up:hover {
+  content: url('up-orange.svg');
+  cursor: pointer;
+}
+
+.swap-down:hover {
+  cursor: pointer;
+  content: url('down-orange.svg');
+}

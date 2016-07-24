@@ -208,16 +208,22 @@ function smaller(img, width, height) {
 
 // feature queue rearranging
 function swap(node, up){
-  const node1 = node.parentElement.parentElement;
+  const node1 = node.parentElement.parentElement.parentElement;
   const node2 = up ? node1.previousElementSibling :
                      node1.nextElementSibling;
 
   const map_id_1 = node1.dataset.id;
   const map_id_2 = node2.dataset.id;
 
-  if(!map_id_2) return false;
+  if(!map_id_2){
+    return false;
+  } else console.log(map_id_2);
 
   const callback = function (response) {
+    const temp = node1.children[0].children[1].innerHTML
+    node1.children[0].children[1].innerHTML = node2.children[0].children[1].innerHTML
+    node2.children[0].children[1].innerHTML = temp
+
     node1.parentNode.replaceChild(node1, node2);
     up ? node1.parentNode.insertBefore(node2, node1.nextSibling) :
          node1.parentNode.insertBefore(node2, node1);

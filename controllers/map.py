@@ -285,7 +285,7 @@ class MapPage(MapBase):
       "deletecomment": self.DeleteComment,
       "clearflag": self.ClearFlag,
       "review": self.SubmitReview,
-      "swap": self.Swap
+      "swap": self.SwapReviewSlot
     }
     if action in methods:
       methods[action](map, template_values)
@@ -414,11 +414,10 @@ class MapPage(MapBase):
     map.put()
 
   @lib.RequiresModerator
-  def Swap(self, map_id, template_values):
-    print(template_values)
-    print(map_id)
-    # print(other_map_id)
+  def SwapReviewSlot(self, map, template_values):
     other_map_id = self.request.POST.get("other_map_id", None)
+    other_map = model.Map.get_by_map_id(int(other_map_id))
+    map.SwapReviewSlot(other_map)
 
   @lib.RequiresModerator
   def DeleteComment(self, map, template_values):
