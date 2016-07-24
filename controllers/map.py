@@ -21,7 +21,7 @@ import lib
 from lib import imagegen
 
 COMMENTS_PER_PAGE = 40
-REVIEW_INTERVAL = datetime.timedelta(hours=24)
+REVIEW_INTERVAL = datetime.timedelta(hours=72)
 
 def create_map_image(mapdata):
   # Create the map images
@@ -45,7 +45,7 @@ def create_map_blob(mapdata):
     logging.exception("Failed to save level image.")
     return None
 
-      
+
 class MapBase(lib.BaseHandler):
   def AddOrEditMap(self, form_template, map=None):
     template_values = self.GetTemplateValues("post")
@@ -84,7 +84,7 @@ class MapBase(lib.BaseHandler):
         template_values["resubmit"] = True
         self.RenderTemplate(form_template, template_values)
         return
-      
+
       mapdata_hash = hashlib.sha1(mapdata).hexdigest()
       dup_map = model.Map.all().filter("mapdata_hash =", mapdata_hash).get()
       if dup_map and (not map or dup_map.key() != map.key()):
@@ -144,7 +144,7 @@ class MapPage(MapBase):
       return model.Vote.get(vote_key) != None
     else:
       return True
-  
+
   def get(self, map_id, action=None):
     template_values = self.GetTemplateValues("get")
 
@@ -204,7 +204,7 @@ class MapPage(MapBase):
                                           map.featured_date > datetime.datetime.today())
     template_values["comment_page_count"] = int(math.ceil(map.comment_count / COMMENTS_PER_PAGE))
     template_values["pages"] = self.GetPagesArray(map.comment_count, 0, COMMENTS_PER_PAGE)
-    
+
     q = model.Map.all()
     q.filter("user =", map.user)
     q.filter("unlisted =", False)
@@ -213,7 +213,7 @@ class MapPage(MapBase):
     other_maps = q.fetch(6)
     other_maps.reverse()
     template_values["other_maps"] = other_maps
-    
+
     self.RenderTemplate("map.html", template_values)
 
   @lib.RequiresLogin
@@ -254,7 +254,7 @@ class MapPage(MapBase):
   def ShowCommentsPage(self, map, template_values):
     start = int(self.request.GET.get("start", 0))
     count = int(self.request.GET.get("count", COMMENTS_PER_PAGE))
-                
+
     q = model.Comment.all().ancestor(map).order("-lastupdated")
     comments = q.fetch(count + 1, start)
     template_values["comments"] = comments[:count]
@@ -290,7 +290,7 @@ class MapPage(MapBase):
       methods[action](map, template_values)
     else:
       self.RenderTemplate("internalerror.html", template_values)
-  
+
   @lib.RequiresLogin
   def NewComment(self, map, template_values):
     title = self.request.POST.get("title", "").strip()
@@ -337,7 +337,7 @@ class MapPage(MapBase):
         map.RecordVote(self.user.key(), rating)
 
     self.redirect("/map/%d" % map.map_id)
-  
+
   @lib.RequiresLogin
   def EditMap(self, map, template_values):
     if(map.user.key() == self.user.key() or self.user.isadmin):
@@ -411,7 +411,7 @@ class MapPage(MapBase):
     map = model.Map.get(map_id)
     map.comment_count += delta
     map.put()
-    
+
   @lib.RequiresModerator
   def DeleteComment(self, map, template_values):
     comment_id = self.request.POST.get("commentid", None)
@@ -442,7 +442,7 @@ class MapPage(MapBase):
   @lib.RequiresLogin
   def SubmitReview(self, map, template_values):
     template_values["map"] = map
-    
+
     if not self.user.canreview and not self.user.isadmin:
       self.response.set_status(403)
       self.RenderTemplate("permissiondenied.html", template_values)
@@ -467,7 +467,7 @@ class MapPage(MapBase):
               m.put()
               gap = newgap
               gapidx = i
-          
+
           # Move any remaining maps forward
           for i in range(gapidx+1, len(maps)):
             newgap = maps[i].featured_date
@@ -480,7 +480,7 @@ class MapPage(MapBase):
         map.featured_text = None
         map.featured_date = None
         map.put()
-        
+
         self.RenderTemplate("reviewdeleted.html", template_values)
       else:
         review_text = self.request.POST.get("review", "")
@@ -492,33 +492,12 @@ class MapPage(MapBase):
           template_values["review"] = review_text
           self.RenderTemplate("reviewmap.html", template_values)
           return
-        
+
         if not map.featured_date:
           # New review
-          
-          # Fetch the queue
-          reviewqueue = model.Map.all().filter("featured_date >=", datetime.datetime.now()).order("featured_date").fetch(100)
-          
-          # Find the right place in the queue
-          reviewcounts = {self.user.key(): 0}
-          i = 0
-          for i, review in enumerate(reviewqueue):
-            reviewcounts[review._featured_by] = reviewcounts.get(review._featured_by, 0) + 1
-            if reviewcounts[review._featured_by] > reviewcounts[self.user.key()] + 1:
-              review_date = review.featured_date
-              break
-          else:
-            if reviewqueue:
-              review_date = max(datetime.datetime.now(), reviewqueue[-1].featured_date + REVIEW_INTERVAL)
-            else:
-              lastreview = model.Map.all().order("-featured_date").get()
-              review_date = max(datetime.datetime.now(), lastreview.featured_date)
+          latest_review = model.Map.all().order("-featured_date").get()
+          review_date = max(datetime.datetime.now(), latest_review.featured_date + REVIEW_INTERVAL)
 
-          # Move any reviews after it forward
-          for j in range(i, len(reviewqueue)):
-            reviewqueue[j].featured_date += REVIEW_INTERVAL
-            reviewqueue[j].put()
-          
           map.featured_date = review_date
           map.featured_by = self.user
         map.featured_text = review_text
@@ -531,7 +510,7 @@ class SubmitPage(MapBase):
     template_values["resubmit"] = False
     template_values["tags"] = [""] * 5
     return template_values
-      
+
   @lib.RequiresLogin
   def get(self):
     template_values = self.GetTemplateValues("get")
