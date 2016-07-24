@@ -1,18 +1,45 @@
 from google.appengine.ext import db
+from google.appengine.ext import blobstore
+from google.appengine.api import images
 from google.appengine.api import urlfetch
 import urllib
 import datetime
 import logging
 import cgi
 import random
+import uuid
+from PIL import Image
+import cloudstorage
 
 import config
 import model
 import lib
-from lib import imaginrequest
 
 NUM_COMMENTS = 10
 NUM_MAPS = 6
+
+def create_avatar_image(upload):
+  try:
+    image = Image.open(upload.file)
+    image.thumbnail((64, 64), Image.ANTIALIAS)
+    return image
+  except Exception, ex:
+    logging.exception("Failed to generate avatar.")
+    return None
+
+def create_avatar_blob(upload):
+  image = create_avatar_image(upload)
+  if not image: return None
+  try:
+    file_name = "/nmapsdotnet.appspot.com/avatars/%s.png" % uuid.uuid4()
+    with cloudstorage.open(file_name, "w") as f:
+      image.save(f, format="PNG")
+    blob_key = blobstore.create_gs_key("/gs" + file_name)
+    return images.get_serving_url(blob_key)
+  except Exception:
+    logging.exception("Failed to save avatar.")
+    return None
+
 
 class UserInfoPage(lib.BaseHandler):
   def can_modify(self, user):
@@ -92,25 +119,8 @@ class UserInfoPage(lib.BaseHandler):
       user.profile = self.request.POST.get("profile", user.profile)
       avatar_img = self.request.POST.get("avatar_img", None)
       if isinstance(avatar_img, cgi.FieldStorage):
-        avatar_path = "numa/avatars/%s" % (user.key().name())
-        ir = imaginrequest.ImaginRequest()
-        ir.add_image("src", avatar_img.filename, avatar_img.value)
-        ir.op("convert", "src", "src", "RGBA")
-        ir.op("thumbnail", "src", 64, 64)
-        ir.op("s3send", "src", "PNG", config.s3_pubkey, config.s3_privkey, config.s3_bucket,
-              avatar_path, "public-read")
-
-        try:
-          response = ir.execute()
-          if response.status_code == 200:
-            user.avatar = "http://static.notdot.net/%s?%d" % (avatar_path, random.randint(0, 65536))
-          else:
-            logging.error("Error uploading avatar: %s" % response.content)
-            raise urlfetch.DownloadError()
-        except urlfetch.DownloadError:
-          self.RenderTemplate("internalerror.html", self.GetTemplateValues(None))
-          return
-      
+        avatar_path = create_avatar_blob(avatar_img)
+        if avatar_path: user.avatar = avatar_path
       if self.user.isadmin:
         model.AdminLog.create(self, ref=user)
         user.canvote = bool(self.request.POST.get("canvote", False))
