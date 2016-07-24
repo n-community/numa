@@ -5,7 +5,7 @@
 {% block title %}{% if future %}Upcoming {% endif %}Featured Maps{% endblock %}
 {% block content %}
   <div class="emptysection">
-    <h2>{% if future %}Upcoming {% endif %}Featured Maps: {{start|add:1}} to {{count}}</h2>
+    <h2>{% if future %}Upcoming {% endif %}Featured Maps{% if not future %}: {{start|add:1}} to {{count}}{% endif %}</h2>
   </div>
   {% for map in results %}
     <div class="section" data-id="{{map.map_id}}">
@@ -35,18 +35,20 @@
       {% include "adbanner.html" %}
     {% endif %}
   {% endfor %}
-  <div id="browsenext">
-    {% if has_more %}
-      <a href="/featured?start={{start|add:count}}&count={{count}}{% if future %}&future=True{% endif %}">Next {{count}}</a></div>
-    {% else %}
-      &nbsp;
-    {% endif %}
-  </div>
-  <div id="browseprev">
-    {% if not start|equals:0 %}
-      <a href="/authors?start={{prevstart}}&count={{count}}{% if future %}&future=True{% endif %}">Previous {{prevcount}}</a></div>
-    {% else %}
-      &nbsp;
-    {% endif %}
-  </div>
+  {% if not future %}
+    <div id="browsenext">
+      {% if has_more %}
+        <a href="/featured?start={{start|add:count}}&count={{count}}{% if future %}&future=True{% endif %}">Next {{count}}</a></div>
+      {% else %}
+        &nbsp;
+      {% endif %}
+    </div>
+    <div id="browseprev">
+      {% if not start|equals:0 %}
+        <a href="/authors?start={{prevstart}}&count={{count}}{% if future %}&future=True{% endif %}">Previous {{prevcount}}</a></div>
+      {% else %}
+        &nbsp;
+      {% endif %}
+    </div>
+  {% endif %}
 {% endblock %}
