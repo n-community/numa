@@ -21,15 +21,18 @@ class FeaturedPage(lib.BaseHandler):
 
     q = model.Map.all()
     today = datetime.datetime.today()
+
+    results = None
     if future:
       q.filter("featured_date >", today)
       q.order("featured_date")
+      results = q.fetch(100)
     else:
       q.filter("featured_date >", None)
       q.filter("featured_date <=", today)
       q.order("-featured_date")
+      results = q.fetch(count + 1, start)
 
-    results = q.fetch(count + 1, start)
 
     if atom:
       if results:

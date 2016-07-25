@@ -80,7 +80,7 @@ function tagchange(tag, prefix) {
 			currentDiv.innerHTML = request.responseText;
 			currentDiv.childNodes[0].style.left = tag.offsetLeft + "px";
 			currentDiv.childNodes[0].style.top = tag.offsetTop + tag.offsetHeight + "px";
-			tagDialog.appendChild(currentDiv); 
+			tagDialog.appendChild(currentDiv);
 			request = null;
 		}
 	};
@@ -204,4 +204,31 @@ function smaller(img, width, height) {
     setZoom(img, 'ltr', w, h, i, 20*(now-i));
   }
   setThumb(img, 'ltr', "thumbs", 20*(now+1));
+}
+
+// feature queue rearranging
+function swap(node, up){
+  const node1 = node.parentElement.parentElement.parentElement;
+  const node2 = up ? node1.previousElementSibling :
+                     node1.nextElementSibling;
+
+  const map_id_1 = node1.dataset.id;
+  const map_id_2 = node2.dataset.id;
+
+  if(!map_id_2) return false;
+
+  const callback = function (response) {
+    const temp = node1.children[0].children[1].innerHTML
+    node1.children[0].children[1].innerHTML = node2.children[0].children[1].innerHTML
+    node2.children[0].children[1].innerHTML = temp
+
+    node1.parentNode.replaceChild(node1, node2);
+    up ? node1.parentNode.insertBefore(node2, node1.nextSibling) :
+         node1.parentNode.insertBefore(node2, node1);
+  }
+
+  url = "/" + map_id_1 + "/swap"
+  data = "other_map_id=" + map_id_2;
+  ajaxRequest(url, data, callback);
+  return false;
 }

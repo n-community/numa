@@ -20,7 +20,7 @@ class DuplicateVoteError(Exception): pass
 class Map(db.Model):
   RATING_THRESHOLD = 5
   MAX_RATING = 5
-  
+
   RESERVED_TAGS = set([u"rated", u"unrated", u"bitesized", u"author", u"title",
                        u"favorites", u"starred", u"featured", u"delisted"])
   TAG_RE = re.compile("^[a-zA-Z0-9.-]+$")
@@ -38,7 +38,7 @@ class Map(db.Model):
   description = db.TextProperty()
   mapdata = db.TextProperty(required=True)
   lastupdated = db.DateTimeProperty(required=True, auto_now_add=True)
-  created = db.DateTimeProperty(required=True, auto_now_add=True)  
+  created = db.DateTimeProperty(required=True, auto_now_add=True)
   user = db.ReferenceProperty(User, collection_name="maps")
   rating = db.FloatProperty(required=True, default=0.0)
   votes = db.IntegerProperty(required=True, default=0)
@@ -64,7 +64,7 @@ class Map(db.Model):
 
   # Timestamp of the first comment the author hasn't read.
   first_unread_comment = db.DateTimeProperty()
-  
+
   def __init__(self, *args, **kwargs):
     super(Map, self).__init__(*args, **kwargs)
     self.random = random.random()
@@ -96,7 +96,7 @@ class Map(db.Model):
 
   def RecordVote(self, user_key, rating, delta=1):
     map_key = self.key()
-    
+
     def DoUpdateMap():
       vote_key = db.Key.from_path("Map", map_key.name(),
                                   "Vote", user_key.name())
@@ -139,7 +139,7 @@ class Map(db.Model):
       if change_rated_count:
         user.rated_map_count += delta
       user.put()
-      
+
     try:
       old_bar, new_bar, change_rated_count = db.run_in_transaction(DoUpdateMap)
       db.run_in_transaction(DoUpdateUser, old_bar, new_bar, change_rated_count)
@@ -161,7 +161,7 @@ class Map(db.Model):
         db.put(fav)
 
     db.run_in_transaction(DoAddStar)
-  
+
   def RemoveStar(self, user_key):
     map_key = self.key()
     def DoRemoveStar():
@@ -174,9 +174,14 @@ class Map(db.Model):
 
     db.run_in_transaction(DoRemoveStar)
 
+  def SwapReviewSlot(self, other):
+    self.featured_date, other.featured_date = other.featured_date, self.featured_date
+    self.put()
+    other.put()
+
   def GetExtendedTags(self):
     return sorted(self.tags)
-  
+
   def GetUserTags(self):
     user_tags = set(self.tags - Map.RESERVED_TAGS)
     author_tag = Tag.normalise(u"author:%s" % (self.user.username,))
@@ -285,16 +290,16 @@ class Map(db.Model):
 
     if db.RunInTransaction(DoClearFirstUnread):
       db.RunInTransaction(DoDecrementUnreadCount)
-  
+
   def GetMapdata(self):
     return "$%s#%s#%s#%s#" % (lib.nify_str(self.name),
                               lib.nify_str(self.user.username),
                               lib.nify_str(self.category or "none"),
                               lib.nify_str(self.mapdata))
-  
+
   def IsFeatured(self):
     """Is the map featured as far as the site is concerned?
-    
+
     This will return False for maps queued up to be Featured in the future."""
     return self.featured_date and self.featured_date <= datetime.datetime.now()
 
@@ -306,7 +311,7 @@ def ReadBadwords():
 
 class Comment(db.Model):
   _badwords = ReadBadwords()
-  
+
   author = db.ReferenceProperty(User, required=True)
   title = db.StringProperty(multiline=True)
   text = db.TextProperty()
@@ -353,7 +358,7 @@ class Comment(db.Model):
       map.comment_count += 1
       map.put()
       return (comment, user_key)
-    
+
     def DoUpdateUnreadCount(user_key):
       user = User.get(user_key)
       user.num_unread_maps += 1
@@ -373,7 +378,7 @@ class Vote(db.Model):
 class Favorite(db.Model):
   added = db.DateTimeProperty(required=True, auto_now_add=True)
   map_id = db.IntegerProperty()
-  
+
   @staticmethod
   def Exists(user_key, map_key):
     fav_key = db.Key.from_path("Favorite", map_key.name(),
