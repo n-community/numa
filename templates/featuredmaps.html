@@ -17,10 +17,12 @@
         <span>Featured map for {{map.featured_date|date:"Y-m-d"}}:</span>
         <a href="/{{map.map_id}}">{{map.name|escape}}</a>
         by <a href="/user/{{map.user.username|urlencode}}">{{map.user.username|escape}}</a>
-        <div class="arrows">
-          <div class="swap-up" onclick="swap(this, true);"></div>
-          <div class="swap-down" onclick="swap(this);"></div>
-        </div>
+        {% if future %}
+          <div class="arrows">
+            <div class="swap-up" onclick="swap(this, true);"></div>
+            <div class="swap-down" onclick="swap(this);"></div>
+          </div>
+        {% endif %}
       </h2>
       <div class="body">
         <a href="/{{map.map_id}}"><img src="{{map.image_url}}=s132" alt="Thumbnail of the map '{{map.name|escape}}'" class="thumb" /></a>
