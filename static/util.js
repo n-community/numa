@@ -215,9 +215,7 @@ function swap(node, up){
   const map_id_1 = node1.dataset.id;
   const map_id_2 = node2.dataset.id;
 
-  if(!map_id_2){
-    return false;
-  } else console.log(map_id_2);
+  if(!map_id_2) return false;
 
   const callback = function (response) {
     const temp = node1.children[0].children[1].innerHTML

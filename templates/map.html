@@ -133,9 +133,9 @@
 {% if show_featured %}
   <div class="section">
     {% if future_featured %}
-      <h2>This map will be a featured map on {{map.featured_date|date:"Y-m-d"}}</h2>
+      <h2>This map will be featured on {{map.featured_date|date:"Y-m-d"}}</h2>
     {% else %}
-      <h2>This map was a featured map on {{map.featured_date|date:"Y-m-d"}}</h2>
+      <h2>This map was featured on {{map.featured_date|date:"Y-m-d"}}</h2>
     {% endif %}
     <div class="body">
       <p>
