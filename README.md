@@ -28,6 +28,7 @@ this:
 
 ## Deploying to Google
 
+- You must be a project owner to deploy.
 - Pick a version name for a test deploy.  Your branch name is a good choice.
 - Deploy your changes as that version name from the numa folder:
   `gcloud app deploy -v versionname --no-promote`
