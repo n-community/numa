@@ -17,11 +17,14 @@ handlers:
 - url: /static
   static_dir: static
   expiration: '30d'
+  secure: always
 
 - url: /(canvas.html|crossdomain.xml|favicon.ico|favicon.png|rpc_relay.html)
   static_files: static/\1
   upload: static/(canvas.html|crossdomain.xml|favicon.ico|favicon.png|rpc_relay.html)
   expiration: '30d'
+  secure: always
 
 - url: /.*
   script: request.application
+  secure: always
