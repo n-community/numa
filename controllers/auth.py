@@ -42,14 +42,14 @@ class LoginPage(lib.BaseHandler):
       return response_body["authenticated"] == "1"
     except urlfetch.DownloadError:
       raise AuthServerError()
-    
+
   def get(self):
     referer = self.request.headers.get("Referer", None)
     if referer and not referer.endswith("/logout") and not referer.endswith("/login"):
       self.session["redirect"] = referer
       self.session.save()
     self.RenderTemplate("login.html", self.GetTemplateValues("get"))
-  
+
   def post(self):
     try:
       template_values = self.GetTemplateValues("post")
@@ -62,7 +62,7 @@ class LoginPage(lib.BaseHandler):
         return
 
       user = model.User.get_by_username(username)
-      pass_hash = model.User.GetPasswordHash(username, password)      
+      pass_hash = model.User.GetPasswordHash(username, password)
       if not user or user.pass_hash != pass_hash:
         result = self.AuthenticateUser(username, password)
         if result:
@@ -149,14 +149,14 @@ class VerifyPage(lib.BaseHandler):
     template_values["email_hash"] = self.user.GetEmailHash()
     email_body = webapp.template.render(self.GetTemplatePath("activation.txt"),
                                         template_values)
-    mail.send_mail(sender="numa-noreply@notdot.net",
+    mail.send_mail(sender="contact.nmaps@gmail.com",
                    to="%s <%s>" % (self.user.username,
                                    self.user.email),
                    subject="NUMA Account Activation",
                    body=email_body)
     logging.info("Sent validation email: %s" % (email_body,))
     self.RenderTemplate("emailsent.html", template_values)
-  
+
   def get(self):
     template_values = self.GetTemplateValues("get")
     username = self.request.GET.get("username", "")
@@ -170,7 +170,7 @@ class VerifyPage(lib.BaseHandler):
       return
     user.validated = True
     user.put()
-    
+
     self.user = user
     self.session["user"] = str(user.key())
     self.session["logged_in"] = True
