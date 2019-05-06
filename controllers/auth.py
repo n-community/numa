@@ -149,7 +149,7 @@ class VerifyPage(lib.BaseHandler):
     template_values["email_hash"] = self.user.GetEmailHash()
     email_body = webapp.template.render(self.GetTemplatePath("activation.txt"),
                                         template_values)
-    mail.send_mail(sender="audrey.jo.burk@gmail.com",
+    mail.send_mail(sender="contact.nmaps@gmail.com",
                    to="%s <%s>" % (self.user.username,
                                    self.user.email),
                    subject="NUMA Account Activation",
