@@ -50,6 +50,7 @@ def build_map_dict(map):
   map_dict['featured_by'] = map.featured_by.username if map.featured_by else None
   map_dict['tags'] = list(map.tags)
   map_dict['map_id'] = map.map_id
+  map_dict['image_url'] = map.image_url
   return map_dict
 
 
