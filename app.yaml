@@ -19,9 +19,9 @@ handlers:
   expiration: '30d'
   secure: always
 
-- url: /(canvas.html|crossdomain.xml|favicon.ico|favicon.png|rpc_relay.html)
+- url: /(canvas.html|crossdomain.xml|favicon.ico|favicon.png|rpc_relay.html|robots.txt)
   static_files: static/\1
-  upload: static/(canvas.html|crossdomain.xml|favicon.ico|favicon.png|rpc_relay.html)
+  upload: static/(canvas.html|crossdomain.xml|favicon.ico|favicon.png|rpc_relay.html|robots.txt)
   expiration: '30d'
   secure: always
 
