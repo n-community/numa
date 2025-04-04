@@ -18,10 +18,10 @@ class HomePage(lib.BaseHandler):
     user.featured_map_count += 1
     user.put()
   
-  def get(self, page=""):
+  def get(self, request, page=""):
     template_values = self.GetTemplateValues("get")
     if page == "news.atom":
-      self.RenderTemplate("news.atom", template_values)
+      return self.RenderTemplate("news.atom", template_values)
     else:
       featured = model.Map.all()
       today = datetime.datetime.today()
@@ -41,8 +41,7 @@ class HomePage(lib.BaseHandler):
           template_values["faved"] = model.Favorite.Exists(self.user.key(), featured_map.key())
         template_values["featured"] = featured_map
       
-      
-      self.RenderTemplate("index.html", template_values)
+      return self.RenderTemplate("index.html", template_values)
       
   def GetTemplateValues(self, method):
     template_values = super(HomePage, self).GetTemplateValues(method)

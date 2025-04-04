@@ -31,7 +31,7 @@ __all__ = ['AuthorizationError',
            'TransientError',
           ]
 
-import httplib
+import http.client as httplib
 
 
 class Error(Exception):

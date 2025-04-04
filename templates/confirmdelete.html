@@ -10,6 +10,7 @@
 {% block content %}
 <div class="section">
   <form method="post" action="/{{map.map_id}}/delete">
+    {% csrf_token %}
     {% if show_delist %}
       <h2>Delist Map</h2>
       <div class="body">

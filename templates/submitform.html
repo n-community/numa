@@ -6,7 +6,8 @@
     <div class="body">
       {% if error %}<div class="error">{{error}}</div>{% endif %}
       <script type="text/javascript" src="tags.js"></script>
-      <form method="post" action="/submit">
+      <form method="post" action="/submit" id="useme">
+        {% csrf_token %}
               <table class="formtable">
                       <tr>
                               <td>Map Name</td>

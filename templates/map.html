@@ -19,7 +19,7 @@
     </h2>
     {% if session.logged_in %}
       <div class="attribs">
-        {% ifequal user.key map.user.key %}
+        {% if user.key == map.user.key %}
           <a href="/{{map.map_id}}/edit" class="option">Edit</a>
           {% if not map.moderator_unlisted %}
             <a href="/{{map.map_id}}/delete" class="option">
@@ -50,7 +50,7 @@
               {% endif %}
             {% endif %}
           {% endif %}
-        {% endifequal %}
+        {% endif %}
       </div>
     {% endif %}
     <div class="body">
@@ -78,12 +78,12 @@
         <th>Created</th>
         <td>{{map.created|date_relative}}</td>
       </tr>
-      {% ifnotequal map.created map.lastupdated %}
+      {% if map.created != map.lastupdated %}
         <tr>
           <th>Last Modified</th>
           <td>{{map.lastupdated|date_relative}}</td>
         </tr>
-      {% endifnotequal %}
+      {% endif %}
       {% if not map.disableratings %}
         <tr>
           <th>Rating</th>
@@ -98,8 +98,9 @@
             {% endif %}{% endif %}
 
             {% if session.logged_in and user.canvote and not user_has_voted and not map.disableratings and not map.unlisted %}
-              {% ifnotequal user.key map.user.key %}
+              {% if user.key != map.user.key %}
                 <form method="post" action="/{{map.map_id}}/rate">
+                  {% csrf_token %}
                   <select name="rating">
                     <option selected="selected" value=""></option>
                     <option value="0">0 (worthless)</option>
@@ -111,7 +112,7 @@
                   </select>
                   <input type="submit" value="Rate" />
                 </form>
-              {% endifnotequal %}
+              {% endif %}
             {% endif %}
           </td>
         </tr>
@@ -234,6 +235,7 @@
     <h2>Add a comment</h3>
     <div class="body">
       <form method="post" action="/{{map.map_id}}/submit">
+        {% csrf_token %}
         <table class="formtable">
           <tr>
             <td rowspan="4" style="vertical-align: top;"><img src="{{user.avatar}}" alt="" /></td>

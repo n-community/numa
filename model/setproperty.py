@@ -20,8 +20,6 @@ class SetProperty(db.Property):
 
     Note that the only permissible value for 'required' is True.
     """
-    if item_type is str:
-      item_type = basestring
     if not isinstance(item_type, type):
       raise TypeError('Item type should be a type object')
     if item_type not in db._ALLOWED_PROPERTY_TYPES:
@@ -65,21 +63,39 @@ class SetProperty(db.Property):
       BadValueError if the set has items are not instances of the
       item_type given to the constructor.
     """
-    if self.item_type in (int, long):
-      item_type = (int, long)
-    else:
-      item_type = self.item_type
 
     for item in value:
-      if not isinstance(item, item_type):
-        if item_type == (int, long):
-          raise db.BadValueError('Items in the %s set must all be integers.' %
-                              self.name)
-        else:
-          raise db.BadValueError(
-              'Items in the %s set must all be %s instances' %
-              (self.name, self.item_type.__name__))
+      if not isinstance(item, self.item_type):
+        raise db.BadValueError(
+            'Items in the %s set must all be %s instances' %
+            (self.name, self.item_type.__name__))
     return value
+  
+  # def validate_set_contents(self, value):
+  #   """Validates that all items in the set are of the correct type.
+
+  #   Returns:
+  #     The validated set.
+
+  #   Raises:
+  #     BadValueError if the set has items are not instances of the
+  #     item_type given to the constructor.
+  #   """
+  #   if self.item_type in (int, long):
+  #     item_type = (int, long)
+  #   else:
+  #     item_type = self.item_type
+
+  #   for item in value:
+  #     if not isinstance(item, item_type):
+  #       if item_type == (int, long):
+  #         raise db.BadValueError('Items in the %s set must all be integers.' %
+  #                             self.name)
+  #       else:
+  #         raise db.BadValueError(
+  #             'Items in the %s set must all be %s instances' %
+  #             (self.name, self.item_type.__name__))
+  #   return value
 
   def empty(self, value):
     """Is list property empty.

@@ -1,9 +1,8 @@
-from google.appengine._internal.django import template
+from django import template
 import datetime
-import urllib
-import logging
+from urllib.parse import quote
 
-import postmarkup
+from . import postmarkup
 
 register = template.Library()
 
@@ -21,20 +20,29 @@ def sub(value, arg):
 
 @register.filter(name="date_relative")
 def date_relative(value):
-  interval = datetime.datetime.now() - value
-  seconds = interval.days * 86400 + interval.seconds
+  # utcnow is slated for deprecation; gotta move to datetime.datetime.now(datetime.UTC) eventually
+  # or: from datetime import datetime, timezone; datetime.now(timezone.utc)
+  interval = datetime.datetime.utcnow() - value
+  total_seconds = interval.total_seconds()
+  seconds = abs(int(total_seconds))
+
+  # disableduser page uses future dates
+  ago = ""
+  if total_seconds > 0:
+    ago = " ago"
+
   if seconds >= 172800:
     return value.strftime("%Y-%m-%d")
   elif seconds > 7200:
     val = int(seconds / 3600)
-    return "%d hours ago" % val
+    return "{} hours{}".format(val, ago)
   elif seconds > 120:
     val = int(seconds / 60)
-    return "%d mins ago" % val
+    return "{} mins{}".format(val, ago)
   elif seconds > 1:
-    return "%d secs ago" % seconds
+    return "{} secs{}".format(seconds, ago)
   else:
-    return "1 second ago"
+    return "1 second{}".format(ago)
 
 register.filter("bbcode", postmarkup.render_bbcode)
 
@@ -52,7 +60,7 @@ def remove_tag(tags, tag):
 
 @register.filter(name="urlcat")
 def urlcat(base, ext):
-  return base + urllib.quote(ext)
+  return base + quote(ext)
 
 @register.tag(name="contextual_link")
 def do_contextual_link(parser, token):
@@ -60,18 +68,21 @@ def do_contextual_link(parser, token):
     tag_name, path, selected_class = token.split_contents()
   except ValueError:
     raise template.TemplateSyntaxError("%r tag requires exactly 2 arguments." % token.contents[0])
+
   nodelist = parser.parse("endlink")
   parser.delete_first_token()
-  return LinkNode(path, selected_class, nodelist)
+  path_qs = template.Variable("path_qs")
+  return LinkNode(path, path_qs, selected_class, nodelist)
 
 class LinkNode(template.Node):
-  def __init__(self, path, selected_class, nodelist):
+  def __init__(self, path, path_qs, selected_class, nodelist):
     self.path = path
+    self.path_qs = path_qs
     self.selected_class = selected_class
     self.nodelist = nodelist
 
   def render(self, context):
-    script_name = template.resolve_variable('path_qs', context)
+    script_name = self.path_qs.resolve(context)
     if script_name == self.path:
       return "<a class=\"%s\" href=\"%s\">%s</a>" % (self.selected_class, self.path, self.nodelist.render(context))
     else:

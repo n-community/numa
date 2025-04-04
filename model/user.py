@@ -5,10 +5,10 @@ import hmac
 import logging
 import math
 import random
-import urllib
+from urllib.parse import urlencode
 
 import config
-import arrayproperty
+from . import arrayproperty
 
 CURVE_STEEPNESS = 0.10
 GRAPH_WIDTH = 150
@@ -56,7 +56,7 @@ class User(db.Model):
 
   @staticmethod
   def get_key_name(username):
-    return "_"+hashlib.sha1(username.lower()).hexdigest()
+    return "_"+hashlib.sha1(username.lower().encode()).hexdigest()
 
   @staticmethod
   def get_key(username):
@@ -74,20 +74,26 @@ class User(db.Model):
 
   @staticmethod
   def GetPasswordHash(username, password):
-    h = hmac.new(config.hmac_secret, User.get_key_name(username).encode("utf-8"),
-                 hashlib.sha1)
+    h = hmac.new(
+      config.hmac_secret.encode(),
+      User.get_key_name(username).encode("utf-8"),
+      hashlib.sha1
+    )
     h.update(password.encode("utf-8"))
     return h.digest()
     
   def GetEmailHash(self):
-    return hmac.new(config.hmac_secret, (u"validate|" + self.email).encode("utf-8"),
-                    hashlib.sha1).hexdigest()
+    return hmac.new(
+      config.hmac_secret.encode(),
+      (u"validate|" + self.email).encode("utf-8"),
+      hashlib.sha1
+    ).hexdigest()
 
   def RecordNewMap(self, delta=1):
     def DoRecordNewMap():
       user = User.get(self.key())
       user.map_count += delta
-      user.last_submission = datetime.datetime.now()
+      user.last_submission = datetime.datetime.utcnow()
       user.put()
 
     db.run_in_transaction(DoRecordNewMap)
@@ -124,4 +130,4 @@ class User(db.Model):
       "chm": "B,4d89f9,0,0,0", # Fill
       "chls": "1,1,0", # Line width 1
     }
-    return "http://chart.apis.google.com/chart?%s" % urllib.urlencode(params)
+    return "http://chart.apis.google.com/chart?%s" % urlencode(params)

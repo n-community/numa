@@ -2,6 +2,9 @@ from google.appengine.ext import db
 from google.appengine.api import memcache
 import logging
 
+from django.http import HttpResponse
+from django.shortcuts import redirect
+
 import model
 import lib
 from lib import query
@@ -12,7 +15,24 @@ MAX_RESULTS_PER_PAGE = 100
 NUM_SUGGESTED_TAGS = 6
 
 class BrowsePage(lib.BaseHandler):
-  def get(self, extension=None):
+  def get(self, request, extension=None):
+    # this is to log rude chinese bots
+    logging.warn(
+      ''' {}
+
+      META:: {}
+
+      HEADERS:: {}
+
+      COOKIES:: {}
+      '''.format(
+        self.request,
+        self.request.META,
+        self.request.headers,
+        self.request.COOKIES
+      )
+    )
+
     template_values = self.GetTemplateValues("get")
     start = min(max(int(self.request.GET.get("start", 0)), 0), MAX_RESULTS)
     count = min(max(int(self.request.GET.get("count", 10)), 1),
@@ -31,9 +51,8 @@ class BrowsePage(lib.BaseHandler):
 
     if lucky:
       try:
-        map = results.next()
-        self.redirect("/%d" % map.map_id)
-        return
+        map = next(results)
+        return redirect("/%d" % map.map_id)
       except StopIteration:
         pass
 
@@ -42,26 +61,26 @@ class BrowsePage(lib.BaseHandler):
     result_list = []
     try:
       if not start_token:
-        for i in range(start): results.next()
+        for i in range(start): next(results)
 
       for i in range(count):
-        result = results.next()
+        result = next(results)
         if not max_updated or max_updated < result.lastupdated:
           max_updated = result.lastupdated
         result_list.append(result)
 
       if not is_random and q.start_token is not None:
         memcache.set("start_token_%s_%d" % (q.query_hash, start+count), q.start_token)
-      results.next()
+      next(results)
       has_more = True
     except StopIteration:
       pass
       
     if extension == "userlevels":
-      self.response.headers["Content-Type"] = "text/plain"
-      for result in result_list:
-        self.response.out.write("%s\n" % result.GetMapdata())
-      return
+      def get_data(result):
+        return result.GetMapdata()
+      txt = "\n".join(get_data(x) for x in result_list)
+      return HttpResponse(txt, content_type="text/plain")
 
     # Suggested tags
     current_tags = [x[0] for x in q.parsed_query
@@ -101,19 +120,19 @@ class BrowsePage(lib.BaseHandler):
     template_values['show_rss'] = not is_random
 
     if extension == ".rss":
-      self.response.headers["Content-Type"] = "application/atom+xml"
-      self.RenderTemplate("browse.atom", template_values)
+      response = self.RenderTemplate("browse.atom", template_values)
+      response.headers["Content-Type"] = "application/atom+xml"
+      return response
     else:
-      self.RenderTemplate("browse.html", template_values)
+      return self.RenderTemplate("browse.html", template_values)
 
 
 class AdvancedSearchPage(lib.BaseHandler):
-  def get(self):
+  def get(self, request):
     count = self.request.GET.get("count", None)
     if not count:
       template_values = self.GetTemplateValues("get")
-      self.RenderTemplate("search.html", template_values)
-      return
+      return self.RenderTemplate("search.html", template_values)
 
     parts = [
       ("tags", ""),
@@ -130,12 +149,12 @@ class AdvancedSearchPage(lib.BaseHandler):
       query.extend(["%s%s" % (prefix, x.strip())
                     for x in self.request.GET.get(tag, "").split(" ") if x.strip()])
 
-    self.redirect("/browse?q=%s&count=%s" % (" ".join(query), self.request.GET.get("count", "10")))
+    return redirect("/browse?q=%s&count=%s" % (" ".join(query), self.request.GET.get("count", "10")))
     
     
 class UnreadPage(lib.BaseHandler):
   @lib.RequiresLogin
-  def get(self):
+  def get(self, request):
     template_values = self.GetTemplateValues("get")
     start = min(max(int(self.request.GET.get("start", 0)), 0), MAX_RESULTS)
     count = min(max(int(self.request.GET.get("count", 10)), 1),
@@ -171,4 +190,4 @@ class UnreadPage(lib.BaseHandler):
     template_values["prevstart"] = max(0, start - count)
     template_values["prevcount"] = start - template_values["prevstart"]
     template_values["show_rss"] = False
-    self.RenderTemplate("browse.html", template_values)
+    return self.RenderTemplate("browse.html", template_values)

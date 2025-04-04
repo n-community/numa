@@ -24,7 +24,8 @@ __all__ = ['ReadBuffer',
 
 import collections
 import os
-import urlparse
+import logging
+from urllib.parse import urlparse
 
 from . import api_utils
 from . import common
@@ -126,7 +127,7 @@ class _StorageApi(rest_api._RestApi):
       resp_tuple = yield super(_StorageApi, self).do_request_async(
           url, method=method, headers=headers, payload=payload,
           deadline=deadline, callback=callback)
-    except urlfetch.DownloadError, e:
+    except urlfetch.DownloadError as e:
       raise errors.TimeoutError(
           'Request to Google Cloud Storage timed out.', e)
 
@@ -700,7 +701,7 @@ class StreamingBuffer(object):
     loc = resp_headers.get('location')
     if not loc:
       raise IOError('No location header found in 201 response')
-    parsed = urlparse.urlparse(loc)
+    parsed = urlparse(loc)
     self._path_with_token = '%s?%s' % (self._path, parsed.query)
 
   def __getstate__(self):
@@ -741,6 +742,7 @@ class StreamingBuffer(object):
     self.name = api_utils._unquote_filename(self._path)
 
   def write(self, data):
+    print("writing some bytes: {} | {}".format(data, type(data)))
     """Write some bytes.
 
     Args:
@@ -750,8 +752,8 @@ class StreamingBuffer(object):
       TypeError: if data is not of type str.
     """
     self._check_open()
-    if not isinstance(data, str):
-      raise TypeError('Expected str but got %s.' % type(data))
+    if not isinstance(data, bytes):
+      raise TypeError('Expected bytes but got %s.' % type(data))
     if not data:
       return
     self._buffer.append(data)
@@ -834,7 +836,7 @@ class StreamingBuffer(object):
           tmp_buffer.append(head)
           tmp_buffer_len += len(head)
 
-      data = ''.join(tmp_buffer)
+      data = b''.join(tmp_buffer)
       file_len = '*'
       if finish and not self._buffered:
         file_len = self._written + len(data)

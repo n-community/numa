@@ -35,7 +35,7 @@ class Query(object):
     self.BuildQueryParts(self.parsed_query)
     self._is_contradiction = not self.BuildQuery(self.parsed_query, user)
     if not random:
-      self.query_hash = hashlib.sha1(repr((self.parsed_query, self._show_unlisted))).digest()
+      self.query_hash = hashlib.sha1(repr((self.parsed_query, self._show_unlisted)).encode()).digest()
   
   def ParseQuery(self, query_str):
     state = S_START
@@ -220,7 +220,7 @@ class Query(object):
     try:
       while True:
         for i in range(count):
-          maps.append(q.next())
+          maps.append(next(q))
         for x in fun(maps, *args, **kwargs): yield x
         maps = []
     except StopIteration:
@@ -250,7 +250,7 @@ class Query(object):
 
   def MergeJoin(self, iters):
     try:
-      current = [x.next() for x in iters]
+      current = [next(x) for x in iters]
       while True:
         smallest = biggest = 0
         for i in range(len(iters)):
@@ -258,9 +258,9 @@ class Query(object):
           if current[i].map_id > current[biggest].map_id: biggest = i
         if smallest == biggest:
           yield current[smallest]
-          current = [x.next() for x in iters]
+          current = [next(x) for x in iters]
         else:
-          current[biggest] = iters[biggest].next()
+          current[biggest] = next(iters[biggest])
     except StopIteration:
       return
 

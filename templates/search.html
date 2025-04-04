@@ -5,6 +5,7 @@
   <h2>Advanced Search</h2>
   <div class="body">
     <form method="get" action="/search">
+      {% csrf_token %}
       <table>
         <tr>
           <th>Find maps that have...</th>

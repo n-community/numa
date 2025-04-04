@@ -282,7 +282,7 @@ def _validate_path(path):
   """
   if not path:
     raise ValueError('Path is empty')
-  if not isinstance(path, basestring):
+  if not isinstance(path, str):
     raise TypeError('Path should be a string but is %s (%s).' %
                     (path.__class__, path))
 
@@ -306,8 +306,8 @@ def validate_options(options):
       raise TypeError('option %r should be a str.' % k)
     if not any(k.lower().startswith(valid) for valid in _GCS_OPTIONS):
       raise ValueError('option %s is not supported.' % k)
-    if not isinstance(v, basestring):
-      raise TypeError('value %r for option %s should be of type basestring.' %
+    if not isinstance(v, str):
+      raise TypeError('value %r for option %s should be a string.' %
                       (v, k))
 
 

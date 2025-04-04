@@ -21,13 +21,13 @@ __all__ = ['set_default_retry_params',
           ]
 
 import copy
-import httplib
+import http.client as httplib
 import logging
 import math
 import os
 import threading
 import time
-import urllib
+from urllib.parse import quote, unquote
 
 
 try:
@@ -91,7 +91,7 @@ def _quote_filename(filename):
   Returns:
     The filename properly quoted to use as URI's path component.
   """
-  return urllib.quote(filename)
+  return quote(filename)
 
 
 def _unquote_filename(filename):
@@ -105,7 +105,7 @@ def _unquote_filename(filename):
   Returns:
     The filename unquoted.
   """
-  return urllib.unquote(filename)
+  return unquote(filename)
 
 
 def _should_retry(resp):
@@ -170,7 +170,7 @@ class _RetryWrapper(object):
             'Tasklet has exceeded request deadline after %s seconds total',
             time.time() - start_time)
         raise
-      except self.retriable_exceptions, e:
+      except self.retriable_exceptions as e:
         pass
 
       if n == 1:

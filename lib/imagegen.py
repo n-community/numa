@@ -17,6 +17,8 @@ _sprites = Image.open(SOURCE_IMG)
 tiles = '3245GFHI?>@A7689QPNOKJLMCBDE;:<=10'
 tilemap = dict(zip(tiles, range(len(tiles))))
 
+def cmp(a, b):
+    return (a > b) - (a < b)
 
 def _object_with_coordinates(sprite_id, x_offset=12, y_offset=12, extra_args=0):
     def obj_fun(x, y, *args):
@@ -151,7 +153,7 @@ def parse_level(leveldata):
         draw_func = objectmap.get(object_id)
         try:
             object_list.extend(draw_func(*object_data))
-        except Exception, ex:
+        except Exception as ex:
             logging.exception("Handling object with id %s and data %r" % (object_id, object_data))
 
     return terrain, object_list
@@ -182,6 +184,6 @@ def draw_tiles(level_image, terrain):
     tile_sprites = iter(terrain)
     for x in range(TILE_SIZE, IMAGE_SIZE[0] - TILE_SIZE, TILE_SIZE):
         for y in range(TILE_SIZE, IMAGE_SIZE[1] - TILE_SIZE, TILE_SIZE):
-            sprite_id = tile_sprites.next()
+            sprite_id = next(tile_sprites)
             sprite = _sprites.crop((sprite_id * COPY_SIZE, 0, (sprite_id + 1) * COPY_SIZE, COPY_SIZE))
             level_image.paste(sprite, (x - BORDER_SIZE, y - BORDER_SIZE), sprite)

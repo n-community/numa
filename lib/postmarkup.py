@@ -8,8 +8,7 @@ Author: Will McGugan (http://www.willmcgugan.com)
 __version__ = "1.0.7"
 
 import re
-from urllib import quote, unquote, quote_plus
-from urlparse import urlparse, urlunparse
+from urllib.parse import quote, unquote, quote_plus, urlparse, urlunparse
 from copy import copy
 
 
@@ -104,7 +103,10 @@ def render_bbcode(bbcode, encoding="ascii"):
     return _bbcode_postmarkup(bbcode, encoding)
 
 
-re_html=re.compile('<.*?>|\&.*?\;')
+# re_html=re.compile('<.*?>|\&.*?\;')
+# try this if it breaks!
+# it broke. maybe.
+re_html=re.compile(r'<.*?>|\&.*?\;')
 def textilize(s):
     """Remove markup from html"""
     return re_html.sub("", s)
@@ -159,7 +161,7 @@ class TagBase(object):
     def get_tag_contents(self):
         """Gets the contents of the tag."""
         content_elements = self.content[self.open_pos+1:self.close_pos]
-        contents = u"".join([unicode(element) for element in content_elements\
+        contents = u"".join([str(element) for element in content_elements\
                              if isinstance(element, StringToken)])
         contents = textilize(contents)
         return contents
@@ -237,15 +239,18 @@ class LinkTag(TagBase):
         if u"javascript:" in self.url.lower():
             return ""
 
-        #Disallow non http: links
-        url_parsed = urlparse(self.url)
-        if url_parsed[0] and not url_parsed[0].lower().startswith(u'http'):
-            return ""
-
-        #Prepend http: if it is not present
-        if not url_parsed[0]:
-            self.url="http://"+self.url
+        try:
+            #Disallow non http: links
             url_parsed = urlparse(self.url)
+            if url_parsed[0] and not url_parsed[0].lower().startswith(u'http'):
+                return ""
+
+            #Prepend http: if it is not present
+            if not url_parsed[0]:
+                self.url="http://"+self.url
+                url_parsed = urlparse(self.url)
+        except:
+            return ""
 
         #Get domain
         self.domain = url_parsed[1].lower()
@@ -256,7 +261,7 @@ class LinkTag(TagBase):
 
         #Quote the url
         #self.url="http:"+urlunparse( map(quote, (u"",)+url_parsed[1:]) )
-        self.url= unicode( urlunparse(quote(component, safe='/=&?:+') for component in url_parsed) )
+        self.url = str( urlunparse(quote(component, safe='/=&?:+') for component in url_parsed) )
 
         #Sanity check
         if not self.url:
@@ -498,7 +503,7 @@ class MultiReplace:
             return
 
         # string to string mapping; use a regular expression
-        keys = repl_dict.keys()
+        keys = list(repl_dict)
         keys.sort() # lexical order
         keys.reverse() # use longest match first
         pattern = "|".join(re.escape(key) for key in keys)
@@ -520,7 +525,11 @@ class StringToken(object):
     def __init__(self, raw):
         self.raw = raw
 
-    def __unicode__(self):
+    # def __unicode__(self):
+    #     ret = PostMarkup.standard_replace.replace(self.raw)
+    #     return ret
+
+    def __str__(self):
         ret = PostMarkup.standard_replace.replace(self.raw)
         return ret
 
@@ -666,8 +675,8 @@ class PostMarkup(object):
 
         """
 
-        if not isinstance(post_markup, unicode):
-            post_markup = unicode(post_markup, encoding, 'replace')        
+        if not isinstance(post_markup, str):
+            post_markup = str(post_markup, encoding, 'replace')
             
         if exclude_tags is None:
             exclude_tags = []
@@ -763,7 +772,7 @@ class PostMarkup(object):
             while tag_stack:
                 post.append(tag_stack.pop().close(len(post), post))
 
-        html = u"".join(unicode(p) for p in post)
+        html = u"".join(str(p) for p in post)
         return html
 
 
@@ -773,7 +782,7 @@ def test():
     post_markup = create()
 
     tests = []
-    print """<link rel="stylesheet" href="code.css" type="text/css" />\n"""
+    print("""<link rel="stylesheet" href="code.css" type="text/css" />\n""")
 
     tests.append('[')
     tests.append(':-[ Hello, [b]World[/b]')
@@ -783,8 +792,8 @@ def test():
     tests.append("[link http://www.willmcgugan.com]My homepage[/link]")
     tests.append("[link]http://www.willmcgugan.com[/link]")
 
-    tests.append(u"[b]Hello André[/b]")
-    tests.append(u"[google]André[/google]")
+    tests.append(u"[b]Hello Andrï¿½[/b]")
+    tests.append(u"[google]Andrï¿½[/google]")
     tests.append("[s]Strike through[/s]")
     tests.append("[b]bold [i]bold and italic[/b] italic[/i]")
     tests.append("[google]Will McGugan[/google]")
@@ -842,13 +851,13 @@ New lines characters are converted to breaks."""\
     tests.append('Nested urls, i.e. [url][url]www.becontrary.com[/url][/url], are condensed in to a single tag.')    
 
     for test in tests:
-        print u"<pre>%s</pre>"%str(test.encode("ascii", "xmlcharrefreplace"))
-        print u"<p>%s</p>"%str(post_markup(test).encode("ascii", "xmlcharrefreplace"))
-        print u"<hr/>"
+        print(u"<pre>%s</pre>"%str(test.encode("ascii", "xmlcharrefreplace")))
+        print(u"<p>%s</p>"%str(post_markup(test).encode("ascii", "xmlcharrefreplace")))
+        print(u"<hr/>")
         print
 
 
-    print render_bbcode("[b]For the lazy, use the http://www.willmcgugan.com render_bbcode function.[/b]")
+    print(render_bbcode("[b]For the lazy, use the http://www.willmcgugan.com render_bbcode function.[/b]"))
     
 
 if __name__ == "__main__":

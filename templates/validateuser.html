@@ -18,6 +18,7 @@
       <p>The only email you will ever recieve from us will be the validation email,
       and we will never give your email out.</p>
       <form method="post" action="/verify">
+        {% csrf_token %}
         <div>Email address: <input type="text" value="" name="email" /> <input type="submit" value="Submit" /></div>
       </form>
     </div>

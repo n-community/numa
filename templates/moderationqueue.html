@@ -1,4 +1,4 @@
-{% extends "admin_section.html" %}
+{% extends "home_section.html" %}
 {% block title %}Moderation Queue{% endblock %}
 {% block content %}
 <div class="section">
@@ -30,20 +30,24 @@
             <th>Date Added</th>
             <td>{{map.created|date:"l j F Y, h:iA"}}</td>
           </tr>
-          {% ifnotequal map.created map.lastupdated %}
+          {% if map.created != map.lastupdated %}
             <tr>
               <th>Last Updated</th>
               <td>{{map.lastupdated|date:"l j F Y, h:iA"}}</td>
             </tr>
-          {% endifnotequal %}
+          {% endif %}
           <tr>
             <th>Rating</th>
             <td>
               {% if map.IsRated %}
-                <img src="/static/{{map.GetRoundedRating}}n.png" alt="{{map.GetRoundedRating}}" /> by {{map.votes}} people.
+                <div class="rated{{map.GetRoundedRating}}">{{map.GetRoundedRating}}</div> by {{map.votes}} people.
               {% else %}
-                <img src="/static/{{map.GetRoundedRating}}n.png" alt="{{map.GetRoundedRating}}" /> by {{map.votes}} people.
-                ({{map.VotesRequired}} more votes required for a public rating.)
+                {% if map.user.key|equals:user.key or user.isadmin %}
+                  <div class="rated{{map.GetRoundedRating}}">{{map.GetRoundedRating}}</div> by {{map.votes}} people.
+                  ({{map.VotesRequired}} more votes required for a public rating.)
+                {% else %}
+                  {{map.VotesRequired}} more votes required for a rating.
+                {% endif %}
               {% endif %}
             </td>
           </tr>
