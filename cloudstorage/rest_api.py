@@ -102,11 +102,6 @@ def _make_token_async(scopes, service_account_id):
   token, expires_at = app_identity.get_access_token(scopes, service_account_id)
   raise ndb.Return((token, expires_at))
 
-  # rpc = app_identity.create_rpc()
-  # app_identity.make_get_access_token_call(rpc, scopes, service_account_id)
-  # token, expires_at = yield rpc
-  # raise ndb.Return((token, expires_at))
-
 
 class _RestApi(object):
   """Base class for REST-based API wrapper classes.
@@ -133,7 +128,6 @@ class _RestApi(object):
         default for current thread will be used.
     """
 
-    # basestring => str
     if isinstance(scopes, str):
       scopes = [scopes]
     self.scopes = scopes

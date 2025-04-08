@@ -20,7 +20,7 @@ NUM_MAPS = 6
 def create_avatar_image(upload):
   try:
     image = Image.open(upload)
-    # image.save("image_tmp.png")
+    # image.save("image_tmp.png") # save a local copy for your viewing pleasure
     image.thumbnail((64, 64), Image.LANCZOS)
     return image
   except Exception as ex:

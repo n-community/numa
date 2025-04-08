@@ -320,7 +320,7 @@ class Comment(db.Model):
   reported_by = db.ReferenceProperty(User, collection_name="reported_comments")
 
   demo_re = re.compile(r"^[0-9]+:[0-9]+(\|[0-9]+)*$")
-  # demo_re = re.compile("^[0-9]+:[0-9]+(\|[0-9]+)*$")
+  
   @staticmethod
   def ValidateDemo(demodata):
     return Comment.demo_re.search(demodata) != None

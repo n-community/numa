@@ -21,14 +21,12 @@ class ArrayProperty(db.Property):
   
   def get_value_for_datastore(self, model_instance):
     value = self.__get__(model_instance, model_instance.__class__)
-    # return db.Blob(value.tostring())
     return db.Blob(value.tobytes())
 
   def make_value_from_datastore(self, value):
     a = array.array(self.typecode)
     if value is None: return a
     a.frombytes(value)
-    # a.fromstring(value)
     return a
   
   data_type=db.Blob

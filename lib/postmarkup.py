@@ -103,9 +103,6 @@ def render_bbcode(bbcode, encoding="ascii"):
     return _bbcode_postmarkup(bbcode, encoding)
 
 
-# re_html=re.compile('<.*?>|\&.*?\;')
-# try this if it breaks!
-# it broke. maybe.
 re_html=re.compile(r'<.*?>|\&.*?\;')
 def textilize(s):
     """Remove markup from html"""
@@ -525,10 +522,7 @@ class StringToken(object):
     def __init__(self, raw):
         self.raw = raw
 
-    # def __unicode__(self):
-    #     ret = PostMarkup.standard_replace.replace(self.raw)
-    #     return ret
-
+    # renamed from __unicode__
     def __str__(self):
         ret = PostMarkup.standard_replace.replace(self.raw)
         return ret
@@ -792,8 +786,8 @@ def test():
     tests.append("[link http://www.willmcgugan.com]My homepage[/link]")
     tests.append("[link]http://www.willmcgugan.com[/link]")
 
-    tests.append(u"[b]Hello Andr�[/b]")
-    tests.append(u"[google]Andr�[/google]")
+    tests.append(u"[b]Hello André[/b]")
+    tests.append(u"[google]André[/google]")
     tests.append("[s]Strike through[/s]")
     tests.append("[b]bold [i]bold and italic[/b] italic[/i]")
     tests.append("[google]Will McGugan[/google]")
