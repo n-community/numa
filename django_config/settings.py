@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'middleware.country_filter.CountryFilter',
+    'middleware.prepend_www.PrependWWW',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
