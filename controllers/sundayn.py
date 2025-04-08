@@ -3,8 +3,6 @@ from google.appengine.ext import db
 import model
 import lib
 
-from django.http import Http404
-
 class SundayNPage(lib.BaseHandler):
   def get(self, request, num=None, action=None):
     template_values = self.GetTemplateValues("get")
@@ -15,7 +13,7 @@ class SundayNPage(lib.BaseHandler):
       sn = last_sn
       
     if not sn:
-      raise Http404()
+      return self.RenderTemplate("nosuchpage.html", template_values, 404)
 
     template_values['sundayn'] = sn
     template_values['last_sundayn'] = last_sn
