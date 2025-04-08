@@ -176,15 +176,6 @@ class MapPage(MapBase):
     if not map:
       return self.RenderTemplate("nosuchmap.html", template_values, 404)
 
-    # methods = {
-    #   None: self.RenderMapPage,
-    #   "edit": self.ShowEditForm,
-    #   "data": self.ShowDataPage,
-    #   "delete": self.ShowDeletePage,
-    #   "review": self.ShowReviewPage,
-    #   "comments": self.ShowCommentsPage,
-    # }
-
     template_values["map"] = map
     template_values["mapdata"] = map.GetMapdata()
 
@@ -193,7 +184,6 @@ class MapPage(MapBase):
     elif action in self.get_methods:
       meth = getattr(self, self.get_methods[action])
       return meth(map, template_values)
-      # return methods[action](map, template_values)
     else:
       return self.RenderTemplate("internalerror.html", template_values, 500)
 
@@ -300,24 +290,9 @@ class MapPage(MapBase):
     if not map:
       return self.RenderTemplate("nosuchmap.html", template_values)
 
-    # methods = {
-    #   "submit": self.NewComment,
-    #   "rate": self.RateMap,
-    #   "edit": self.EditMap,
-    #   "addstar": self.AddStar,
-    #   "remstar": self.RemoveStar,
-    #   "delete": self.DelistMap,
-    #   "reportabuse": self.ReportAbuse,
-    #   "deletecomment": self.DeleteComment,
-    #   "clearflag": self.ClearFlag,
-    #   "review": self.SubmitReview,
-    #   "swap": self.SwapReviewSlot
-    # }
-
     if action in self.post_methods:
       meth = getattr(self, self.post_methods[action])
       return meth(map, template_values)
-      # return methods[action](map, template_values)
     else:
       return self.RenderTemplate("internalerror.html", template_values, 500)
 
@@ -491,20 +466,11 @@ class MapPage(MapBase):
     else:
       if self.request.POST.get("delete", False) and map.featured_by:
         # Deleting review
-
         # Move everything after this map forward
         if not map.IsFeatured():
           maps = model.Map.all().filter("featured_date >", map.featured_date).order("featured_date").fetch(100)
           gap = map.featured_date
           gapidx = -1
-          # Move any reviews by the author of the deleted review forward
-          for i, m in enumerate(maps):
-            if m.featured_by == map.featured_by:
-              newgap = m.featured_date
-              m.featured_date = gap
-              m.put()
-              gap = newgap
-              gapidx = i
 
           # Move any remaining maps forward
           for i in range(gapidx+1, len(maps)):
