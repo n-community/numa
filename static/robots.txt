@@ -1,6 +1,2 @@
 User-agent: *
-Crawl-delay: 30
-Disallow: /browse?q=
-
-User-agent: Linguee
 Disallow: /

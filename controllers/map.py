@@ -139,6 +139,28 @@ class MapBase(lib.BaseHandler):
     return redirect("/map/%d" % map_id)
 
 class MapPage(MapBase):
+  get_methods = {
+    "edit": "ShowEditForm",
+    "data": "ShowDataPage",
+    "delete": "ShowDeletePage",
+    "review": "ShowReviewPage",
+    "comments": "ShowCommentsPage",
+  }
+
+  post_methods = {
+    "submit": "NewComment",
+    "rate": "RateMap",
+    "edit": "EditMap",
+    "addstar": "AddStar",
+    "remstar": "RemoveStar",
+    "delete": "DelistMap",
+    "reportabuse": "ReportAbuse",
+    "deletecomment": "DeleteComment",
+    "clearflag": "ClearFlag",
+    "review": "SubmitReview",
+    "swap": "SwapReviewSlot",
+  }
+
   def UserHasVoted(self, map):
     if self.session.get("logged_in", False):
       vote_key = db.Key.from_path("Map", map.key().name(),
@@ -154,23 +176,26 @@ class MapPage(MapBase):
     if not map:
       return self.RenderTemplate("nosuchmap.html", template_values, 404)
 
-    methods = {
-      None: self.RenderMapPage,
-      "edit": self.ShowEditForm,
-      "data": self.ShowDataPage,
-      "delete": self.ShowDeletePage,
-      "review": self.ShowReviewPage,
-      "comments": self.ShowCommentsPage,
-    }
+    # methods = {
+    #   None: self.RenderMapPage,
+    #   "edit": self.ShowEditForm,
+    #   "data": self.ShowDataPage,
+    #   "delete": self.ShowDeletePage,
+    #   "review": self.ShowReviewPage,
+    #   "comments": self.ShowCommentsPage,
+    # }
 
     template_values["map"] = map
     template_values["mapdata"] = map.GetMapdata()
 
-    if action in methods:
-      return methods[action](map, template_values)
+    if action == None:
+      return self.RenderMapPage(map, template_values)
+    elif action in self.get_methods:
+      meth = getattr(self, self.get_methods[action])
+      return meth(map, template_values)
+      # return methods[action](map, template_values)
     else:
-      # this never set a 500, and seems more like a 404 anyway
-      return self.RenderTemplate("internalerror.html", template_values, 404)
+      return self.RenderTemplate("internalerror.html", template_values, 500)
 
   def GetPagesArray(self, count, start, page_len):
     return [page_len*i if page_len*i != start else None
@@ -275,24 +300,26 @@ class MapPage(MapBase):
     if not map:
       return self.RenderTemplate("nosuchmap.html", template_values)
 
-    methods = {
-      "submit": self.NewComment,
-      "rate": self.RateMap,
-      "edit": self.EditMap,
-      "addstar": self.AddStar,
-      "remstar": self.RemoveStar,
-      "delete": self.DelistMap,
-      "reportabuse": self.ReportAbuse,
-      "deletecomment": self.DeleteComment,
-      "clearflag": self.ClearFlag,
-      "review": self.SubmitReview,
-      "swap": self.SwapReviewSlot
-    }
-    if action in methods:
-      return methods[action](map, template_values)
+    # methods = {
+    #   "submit": self.NewComment,
+    #   "rate": self.RateMap,
+    #   "edit": self.EditMap,
+    #   "addstar": self.AddStar,
+    #   "remstar": self.RemoveStar,
+    #   "delete": self.DelistMap,
+    #   "reportabuse": self.ReportAbuse,
+    #   "deletecomment": self.DeleteComment,
+    #   "clearflag": self.ClearFlag,
+    #   "review": self.SubmitReview,
+    #   "swap": self.SwapReviewSlot
+    # }
+
+    if action in self.post_methods:
+      meth = getattr(self, self.post_methods[action])
+      return meth(map, template_values)
+      # return methods[action](map, template_values)
     else:
-      # this one never was a 500
-      return self.RenderTemplate("internalerror.html", template_values)
+      return self.RenderTemplate("internalerror.html", template_values, 500)
 
   @lib.RequiresLogin
   def NewComment(self, map, template_values):

@@ -29,6 +29,7 @@ The development tool we use to run this project is officially outdated, so it ta
 - Try to log in. Any username and password will work.  If you're asked to verify
   your account, use the URL from the server console output (changing www.nmaps.net
   to localhost:8080).
+- You can view and edit the datastore at http://localhost:8000/datastore (the port may vary; it'll be output as the `admin server` url when you run the server)
 - Start hacking!
 
 

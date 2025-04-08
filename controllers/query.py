@@ -16,23 +16,6 @@ NUM_SUGGESTED_TAGS = 6
 
 class BrowsePage(lib.BaseHandler):
   def get(self, request, extension=None):
-    # this is to log rude chinese bots
-    logging.warn(
-      ''' {}
-
-      META:: {}
-
-      HEADERS:: {}
-
-      COOKIES:: {}
-      '''.format(
-        self.request,
-        self.request.META,
-        self.request.headers,
-        self.request.COOKIES
-      )
-    )
-
     template_values = self.GetTemplateValues("get")
     start = min(max(int(self.request.GET.get("start", 0)), 0), MAX_RESULTS)
     count = min(max(int(self.request.GET.get("count", 10)), 1),
