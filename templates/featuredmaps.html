@@ -40,14 +40,14 @@
   {% if not future %}
     <div id="browsenext">
       {% if has_more %}
-        <a href="/featured?start={{start|add:count}}&count={{count}}{% if future %}&future=True{% endif %}">Next {{count}}</a></div>
+        <a href="/featured?start={{start|add:count}}&count={{count}}{% if future %}&future=True{% endif %}">Next {{count}}</a>
       {% else %}
         &nbsp;
       {% endif %}
     </div>
     <div id="browseprev">
       {% if not start|equals:0 %}
-        <a href="/authors?start={{prevstart}}&count={{count}}{% if future %}&future=True{% endif %}">Previous {{prevcount}}</a></div>
+        <a href="/featured?start={{prevstart}}&count={{count}}{% if future %}&future=True{% endif %}">Previous {{prevcount}}</a>
       {% else %}
         &nbsp;
       {% endif %}

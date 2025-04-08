@@ -20,16 +20,16 @@ class FeaturedPage(lib.BaseHandler):
               and (self.user.isadmin or self.user.canreview))
 
     q = model.Map.all()
-    today = datetime.datetime.today()
+    now = datetime.datetime.utcnow()
 
     results = None
     if future:
-      q.filter("featured_date >", today)
+      q.filter("featured_date >", now)
       q.order("featured_date")
       results = q.fetch(100)
     else:
       q.filter("featured_date >", None)
-      q.filter("featured_date <=", today)
+      q.filter("featured_date <=", now)
       q.order("-featured_date")
       results = q.fetch(count + 1, start)
 

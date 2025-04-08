@@ -212,12 +212,12 @@ class MapPage(MapBase):
       template_values["faved"] = model.Favorite.Exists(self.user.key(),
                                                        map.key())
     show_featured = (map.featured_date
-                     and (map.featured_date <= datetime.datetime.today()
+                     and (map.featured_date <= datetime.datetime.utcnow()
                           or (self.session.get("logged_in", False)
                               and (self.user.isadmin or self.user.canreview))))
     template_values["show_featured"] = show_featured
     template_values["future_featured"] = (show_featured and map.featured_date and
-                                          map.featured_date > datetime.datetime.today())
+                                          map.featured_date > datetime.datetime.utcnow())
     template_values["comment_page_count"] = int(math.ceil(map.comment_count / COMMENTS_PER_PAGE))
     template_values["pages"] = self.GetPagesArray(map.comment_count, 0, COMMENTS_PER_PAGE)
 

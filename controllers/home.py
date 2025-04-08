@@ -24,9 +24,9 @@ class HomePage(lib.BaseHandler):
       return self.RenderTemplate("news.atom", template_values)
     else:
       featured = model.Map.all()
-      today = datetime.datetime.today()
+      now = datetime.datetime.utcnow()
       featured.filter("featured_date >", None)
-      featured.filter("featured_date <=", today)
+      featured.filter("featured_date <=", now)
       featured.order("-featured_date")
       featured_map = featured.get()
       if featured_map and featured_map.featured_date:
