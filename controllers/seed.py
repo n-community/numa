@@ -10,8 +10,12 @@ from seed_data.sundayn import sundayn_seeds
 from seed_data.sundaynfeedback import sundaynfeedback_seeds
 from seed_data.maps import map_seeds
 
+# the seed_x functions should not be part of this class
+# they have no connection to it
+# extract as a util and import
 
 class SeedPage(lib.BaseHandler):
+  @lib.RequiresAdmin
   def get(self, request):
     return
     if os.getenv("GAE_ENV", "").startswith("standard"):
