@@ -15,6 +15,7 @@ import random
 import datetime
 import math
 import uuid
+import zlib
 
 import cloudstorage
 import model
@@ -81,7 +82,8 @@ class MapBase(lib.BaseHandler):
       try:
         mapdata = model.Map.ValidateMapData(mapdata)
         byted = mapdata.encode()
-        final = urlsafe_base64_encode(byted)
+        zipped = zlib.compress(byted)
+        final = urlsafe_base64_encode(zipped)
         template_values['mapdata'] = mapdata
         template_values['compresseddata'] = final
       except model.InvalidMapError as e:
@@ -234,6 +236,8 @@ class MapPage(MapBase):
 
   @lib.RequiresLogin
   def ShowEditForm(self, map, template_values):
+    if self.user.key() != map.user.key() and not self.user.isadmin:
+      return self.RenderTemplate("permissiondenied.html", template_values, 403)
     template_values["tags"] = map.GetUserTags()
     template_values["tags"] += [""] * (5 - min(5, len(template_values["tags"])))
     return self.RenderTemplate("editmap.html", template_values)
@@ -541,13 +545,15 @@ class PreviewPage(lib.BaseHandler):
     def get(self, request):
         mapdata = self.request.GET['mapdata']
         decoded = urlsafe_base64_decode(mapdata)
-        final = decoded.decode()
+        unzipped = zlib.decompress(decoded)
+        final = unzipped.decode()
 
         image = create_map_image(final)
         thumb = self.request.GET.get('thumb')
 
         if thumb:
-            image = image.resize((132, 100))
+          image = image.resize((132, 100))
+
         response = HttpResponse(content_type="image/png")
         image.save(response, "PNG")
         return response

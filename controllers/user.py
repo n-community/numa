@@ -84,6 +84,8 @@ class UserInfoPage(lib.BaseHandler):
     
       if action=="edit" and self.can_modify(user):
         return self.RenderTemplate("edituserinfo.html", template_values)
+      elif action=="edit":
+        return self.RenderTemplate("permissiondenied.html", template_values, 403)
       else:
         if user.favourite_count > user.map_count and user.favourite_count > 0:
           # Show favourites

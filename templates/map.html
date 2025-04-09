@@ -19,7 +19,7 @@
     </h2>
     {% if session.logged_in %}
       <div class="attribs">
-        {% if user.key == map.user.key %}
+        {% if user.key == map.user.key or user.isadmin %}
           <a href="/{{map.map_id}}/edit" class="option">Edit</a>
           {% if not map.moderator_unlisted %}
             <a href="/{{map.map_id}}/delete" class="option">
