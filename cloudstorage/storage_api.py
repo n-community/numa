@@ -742,7 +742,6 @@ class StreamingBuffer(object):
     self.name = api_utils._unquote_filename(self._path)
 
   def write(self, data):
-    print("writing some bytes: {} | {}".format(data, type(data)))
     """Write some bytes.
 
     Args:

@@ -34,14 +34,14 @@ class BaseHandler(View):
       "logged_in": self.session.get("logged_in", False)
     }
 
-  def RenderTemplate(self, template_name, template_values, error=None):
+  def RenderTemplate(self, template_name, template_values, status_code=None):
     response = render(
       self.request,
       template_name,
       template_values
     )
-    if error:
-      response.status_code = error
+    if status_code:
+      response.status_code = status_code
     return response
 
   def get(self, request):

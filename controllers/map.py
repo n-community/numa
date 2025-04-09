@@ -382,6 +382,9 @@ class MapPage(MapBase):
   def DelistMap(self, map, template_values):
     if self.user.key() != map.user.key() and not self.user.ismoderator:
       return redirect("/map/%d" % map.map_id)
+
+    # Datastore yells about cross-group transaction (updates to a map AND a user) if we don't specify xg=True
+    # there should be a better way to achieve this; we had to dig through the GAE source to find TransactionOptions
     transaction_options = TransactionOptions(xg=True)
     if self.request.POST.get("delist", False):
       map.unlisted = True

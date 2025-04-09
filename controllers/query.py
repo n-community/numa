@@ -24,7 +24,7 @@ class BrowsePage(lib.BaseHandler):
     query_str = self.request.GET.get("q", "")
     lucky = bool(self.request.GET.get("ifl", False))
     is_random = bool(self.request.GET.get("random", lucky))
-    
+
     q = query.Query(query_str, is_random, self.user)
     if start > 0 and not is_random:
       start_token = memcache.get("start_token_%s_%d" % (q.query_hash, start))
@@ -58,11 +58,9 @@ class BrowsePage(lib.BaseHandler):
       has_more = True
     except StopIteration:
       pass
-      
+
     if extension == "userlevels":
-      def get_data(result):
-        return result.GetMapdata()
-      txt = "\n".join(get_data(x) for x in result_list)
+      txt = "\n".join(x.GetMapdata() for x in result_list)
       return HttpResponse(txt, content_type="text/plain")
 
     # Suggested tags
@@ -81,7 +79,7 @@ class BrowsePage(lib.BaseHandler):
                     for x in result_list]
         favs = model.Favorite.get(fav_keys)
         template_values["starred"] = set([x.key().name() for x in favs if x])
-    
+
     if q.query_aborted:
       logging.info("Query aborted after evaluating %d favorites, %d maps."
                    % (q.favorites_processed, q.maps_processed))
@@ -126,15 +124,15 @@ class AdvancedSearchPage(lib.BaseHandler):
       ("not_favorite", "-favorites:"),
       ("rated", ""),
     ]
-    
+
     query = []
     for tag, prefix in parts:
       query.extend(["%s%s" % (prefix, x.strip())
                     for x in self.request.GET.get(tag, "").split(" ") if x.strip()])
 
     return redirect("/browse?q=%s&count=%s" % (" ".join(query), self.request.GET.get("count", "10")))
-    
-    
+
+
 class UnreadPage(lib.BaseHandler):
   @lib.RequiresLogin
   def get(self, request):

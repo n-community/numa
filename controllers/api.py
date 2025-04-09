@@ -2,8 +2,7 @@ from google.appengine.ext import db
 
 from django.http import HttpResponse
 
-import json as simplejson
-
+import json
 import logging
 import lib
 import model
@@ -76,7 +75,7 @@ class MapDataHandler(lib.BaseHandler):
     map = model.Map.get_by_map_id(int(map_id))
     data = build_map_dict(map)
     return HttpResponse(
-      simplejson.dumps(data),
+      json.dumps(data),
       content_type="text/json"
     )
 
@@ -86,7 +85,7 @@ class CommentDataHandler(lib.BaseHandler):
     q = model.Comment.all().ancestor(model.Map.get_key(int(map_id))).fetch(1000)
     data = [build_comment_dict(c) for c in q]
     return HttpResponse(
-      simplejson.dumps(data),
+      json.dumps(data),
       content_type="text/json"
     )
 
@@ -115,7 +114,7 @@ class MapFirehoseHandler(lib.BaseHandler):
         'next': q.cursor().decode(),
     }
     return HttpResponse(
-      simplejson.dumps(data),
+      json.dumps(data),
       content_type="text/json"
     )
 
@@ -135,7 +134,7 @@ class CommentFirehoseHandler(lib.BaseHandler):
     }
 
     return HttpResponse(
-      simplejson.dumps(data),
+      json.dumps(data),
       content_type="text/json"
     )
 

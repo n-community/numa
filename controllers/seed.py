@@ -69,7 +69,7 @@ class SeedPage(lib.BaseHandler):
         number=i,
         text=text
       ).put()
-  
+
   def seed_sundaynfeedback(self):
     for feedback in sundaynfeedback_seeds:
       username = feedback.username
