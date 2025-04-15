@@ -8,8 +8,7 @@ Author: Will McGugan (http://www.willmcgugan.com)
 __version__ = "1.0.7"
 
 import re
-from urllib import quote, unquote, quote_plus
-from urlparse import urlparse, urlunparse
+from urllib.parse import quote, unquote, quote_plus, urlparse, urlunparse
 from copy import copy
 
 
@@ -25,14 +24,14 @@ except ImportError:
 
 re_url = re.compile(r"((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)", re.MULTILINE| re.UNICODE)
 def url_tagify(s, tag=u'url'):
-        
+
     def repl(match):
         item = match.group(0)
         return '[%s]%s[/%s]' % (tag, item, tag)
-    
+
     return re_url.sub(repl, s)
-    
-    
+
+
 
 
 def create(include=None, exclude=None, use_pygments=True):
@@ -104,7 +103,7 @@ def render_bbcode(bbcode, encoding="ascii"):
     return _bbcode_postmarkup(bbcode, encoding)
 
 
-re_html=re.compile('<.*?>|\&.*?\;')
+re_html=re.compile(r'<.*?>|\&.*?\;')
 def textilize(s):
     """Remove markup from html"""
     return re_html.sub("", s)
@@ -159,7 +158,7 @@ class TagBase(object):
     def get_tag_contents(self):
         """Gets the contents of the tag."""
         content_elements = self.content[self.open_pos+1:self.close_pos]
-        contents = u"".join([unicode(element) for element in content_elements\
+        contents = u"".join([str(element) for element in content_elements\
                              if isinstance(element, StringToken)])
         contents = textilize(contents)
         return contents
@@ -206,24 +205,24 @@ class LinkTag(TagBase):
         TagBase.__init__(self, name)
 
     def open(self, open_pos):
-                
+
         self.open_pos = open_pos
         return TagStringify(self._open, self.raw)
 
-    def close(self, close_pos, content):        
+    def close(self, close_pos, content):
 
         self.close_pos = close_pos
         self.content = content
         return TagStringify(self._close, self.raw)
 
     def _open(self):
-        
+
         self.domain = u''
         nest_level = self.tag_data['link_nest_level'] = self.tag_data.get('link_nest_level', 0) + 1
-        
+
         if nest_level > 1:
-            return u""            
-        
+            return u""
+
         if self.params:
             url = self.params
         else:
@@ -237,15 +236,18 @@ class LinkTag(TagBase):
         if u"javascript:" in self.url.lower():
             return ""
 
-        #Disallow non http: links
-        url_parsed = urlparse(self.url)
-        if url_parsed[0] and not url_parsed[0].lower().startswith(u'http'):
-            return ""
-
-        #Prepend http: if it is not present
-        if not url_parsed[0]:
-            self.url="http://"+self.url
+        try:
+            #Disallow non http: links
             url_parsed = urlparse(self.url)
+            if url_parsed[0] and not url_parsed[0].lower().startswith(u'http'):
+                return ""
+
+            #Prepend http: if it is not present
+            if not url_parsed[0]:
+                self.url="https://"+self.url
+                url_parsed = urlparse(self.url)
+        except:
+            return ""
 
         #Get domain
         self.domain = url_parsed[1].lower()
@@ -256,7 +258,7 @@ class LinkTag(TagBase):
 
         #Quote the url
         #self.url="http:"+urlunparse( map(quote, (u"",)+url_parsed[1:]) )
-        self.url= unicode( urlunparse(quote(component, safe='/=&?:+') for component in url_parsed) )
+        self.url = str( urlunparse(quote(component, safe='/=&?:+') for component in url_parsed) )
 
         #Sanity check
         if not self.url:
@@ -268,12 +270,12 @@ class LinkTag(TagBase):
             return u""
 
     def _close(self):
-        
+
         self.tag_data['link_nest_level'] -= 1
-        
+
         if self.tag_data['link_nest_level'] > 0:
             return u''
-                
+
         if self.domain:
             return u'</a>'+self.annotate_link(self.domain)
         else:
@@ -498,7 +500,7 @@ class MultiReplace:
             return
 
         # string to string mapping; use a regular expression
-        keys = repl_dict.keys()
+        keys = list(repl_dict)
         keys.sort() # lexical order
         keys.reverse() # use longest match first
         pattern = "|".join(re.escape(key) for key in keys)
@@ -520,7 +522,8 @@ class StringToken(object):
     def __init__(self, raw):
         self.raw = raw
 
-    def __unicode__(self):
+    # renamed from __unicode__
+    def __str__(self):
         ret = PostMarkup.standard_replace.replace(self.raw)
         return ret
 
@@ -581,8 +584,8 @@ class PostMarkup(object):
             if end_pos == -1:
                 yield PostMarkup.TOKEN_TEXT, post[pos:]
                 return
-            
-            if open_tag_pos != -1 and open_tag_pos < end_pos:                
+
+            if open_tag_pos != -1 and open_tag_pos < end_pos:
                 yield PostMarkup.TOKEN_TEXT, post[pos:open_tag_pos]
                 end_pos = open_tag_pos
                 pos = end_pos
@@ -658,7 +661,7 @@ class PostMarkup(object):
                        post_markup,
                        encoding="ascii",
                        exclude_tags=None):
-        
+
         """Converts Post Markup to XHTML.
 
         post_markup -- String containing bbcode
@@ -666,9 +669,9 @@ class PostMarkup(object):
 
         """
 
-        if not isinstance(post_markup, unicode):
-            post_markup = unicode(post_markup, encoding, 'replace')        
-            
+        if not isinstance(post_markup, str):
+            post_markup = str(post_markup, encoding, 'replace')
+
         if exclude_tags is None:
             exclude_tags = []
 
@@ -723,7 +726,7 @@ class PostMarkup(object):
             if tag_name.startswith(u'/'):
                 end_tag = True
                 tag_name = tag_name[1:]
-                
+
             if tag_name in exclude_tags:
                 continue
 
@@ -763,7 +766,7 @@ class PostMarkup(object):
             while tag_stack:
                 post.append(tag_stack.pop().close(len(post), post))
 
-        html = u"".join(unicode(p) for p in post)
+        html = u"".join(str(p) for p in post)
         return html
 
 
@@ -773,7 +776,7 @@ def test():
     post_markup = create()
 
     tests = []
-    print """<link rel="stylesheet" href="code.css" type="text/css" />\n"""
+    print("""<link rel="stylesheet" href="code.css" type="text/css" />\n""")
 
     tests.append('[')
     tests.append(':-[ Hello, [b]World[/b]')
@@ -783,8 +786,8 @@ def test():
     tests.append("[link http://www.willmcgugan.com]My homepage[/link]")
     tests.append("[link]http://www.willmcgugan.com[/link]")
 
-    tests.append(u"[b]Hello André[/b]")
-    tests.append(u"[google]André[/google]")
+    tests.append(u"[b]Hello AndrÃ©[/b]")
+    tests.append(u"[google]AndrÃ©[/google]")
     tests.append("[s]Strike through[/s]")
     tests.append("[b]bold [i]bold and italic[/b] italic[/i]")
     tests.append("[google]Will McGugan[/google]")
@@ -832,24 +835,24 @@ New lines characters are converted to breaks."""\
     tests.append("[dict]Will[/dict]")
 
     tests.append("[code unknownlanguage]10 print 'In yr code'; 20 goto 10[/code]")
-        
+
     tests.append("[url=http://www.google.com/coop/cse?cx=006850030468302103399%3Amqxv78bdfdo]CakePHP Google Groups[/url]")
     tests.append("[url=http://www.google.com/search?hl=en&safe=off&client=opera&rls=en&hs=pO1&q=python+bbcode&btnG=Search]Search for Python BBCode[/url]")
     #tests = []
     # Attempt to inject html in to unicode
     tests.append("[url=http://www.test.com/sfsdfsdf/ter?t=\"></a><h1>HACK</h1><a>\"]Test Hack[/url]")
-        
-    tests.append('Nested urls, i.e. [url][url]www.becontrary.com[/url][/url], are condensed in to a single tag.')    
+
+    tests.append('Nested urls, i.e. [url][url]www.becontrary.com[/url][/url], are condensed in to a single tag.')
 
     for test in tests:
-        print u"<pre>%s</pre>"%str(test.encode("ascii", "xmlcharrefreplace"))
-        print u"<p>%s</p>"%str(post_markup(test).encode("ascii", "xmlcharrefreplace"))
-        print u"<hr/>"
-        print
+        print(u"<pre>%s</pre>"%str(test.encode("ascii", "xmlcharrefreplace")))
+        print(u"<p>%s</p>"%str(post_markup(test).encode("ascii", "xmlcharrefreplace")))
+        print(u"<hr/>")
+        print()
 
 
-    print render_bbcode("[b]For the lazy, use the http://www.willmcgugan.com render_bbcode function.[/b]")
-    
+    print(render_bbcode("[b]For the lazy, use the http://www.willmcgugan.com render_bbcode function.[/b]"))
+
 
 if __name__ == "__main__":
 

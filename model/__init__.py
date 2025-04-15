@@ -1,9 +1,9 @@
 from google.appengine.ext import db
 
-from user import User
-from tag import Tag, TagJoin
-from map import Map, Comment, Vote, Favorite, InvalidMapError
-from sequence import Sequence
+from .user import User
+from .tag import Tag, TagJoin
+from .map import Map, Comment, Vote, Favorite, InvalidMapError
+from .sequence import Sequence
 
 
 class SundayN(db.Model):
@@ -35,7 +35,7 @@ class AdminLog(db.Model):
         is_admin=handler.user.isadmin,
         user=handler.user,
         handler=handler.__class__.__name__,
-        url=handler.request.url,
+        url=handler.request.build_absolute_uri(),
         action=action,
         message=message,
         ref=ref)

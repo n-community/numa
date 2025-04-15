@@ -5,6 +5,7 @@
     <h2>{{map.name|escape}}</h2>
     <div class="body">
     <form method="post" action="/{{map.map_id}}/edit">
+      {% csrf_token %}
       <table class="formtable">
         <tr>
           <th>Map Name</th>

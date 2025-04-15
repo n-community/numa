@@ -4,15 +4,17 @@
   <div class="section">
     <h2>New News Post</h2>
     <div class="body">
+      {% if error %}<div class="error">{{error}}</div>{% endif %}
       <form method="post" action="/admin/newspost">
+        {% csrf_token %}
         <table class="formtable">
           <tr>
             <th>Title</th>
-            <td><input type="text" name="title" style="width: 40em;" /></td>
+            <td><input type="text" name="title" value="{{title|escape}}" style="width: 40em;" /></td>
           </tr>
           <tr>
             <th>Text</th>
-            <td><textarea name="text" style="width: 40em; height: 20em;"></textarea></td>
+            <td><textarea name="text" style="width: 40em; height: 20em;">{{text|escape}}</textarea></td>
           </tr>
           <tr>
             <th></th>

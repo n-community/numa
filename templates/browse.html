@@ -63,12 +63,12 @@
         <th>Date Added</th>
         <td>{{map.created|date_relative}}</td>
       </tr>
-      {% ifnotequal map.created map.lastupdated %}
+      {% if map.created != map.lastupdated %}
         <tr>
           <th>Last Updated</th>
           <td>{{map.lastupdated|date_relative}}</td>
         </tr>
-      {% endifnotequal %}
+      {% endif %}
       {% if not map.disableratings %}
         <tr>
           <th>Rating</th>
@@ -90,9 +90,6 @@
   </div>
   <div class="clear"></div>
 </div>
-{% if forloop.first %}
-  {% include "adbanner.html" %}
-{% endif %}
 {% endfor %}
 {% if not results %}
   <div class="section">

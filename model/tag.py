@@ -13,7 +13,7 @@ class Tag(db.Model):
   
   @staticmethod
   def get_key_name(tag):
-    return "_"+hashlib.sha1(Tag.normalise(tag)).hexdigest()
+    return "_"+hashlib.sha1(Tag.normalise(tag).encode()).hexdigest()
 
   @staticmethod
   def get_key(tag):
@@ -42,7 +42,7 @@ class TagJoin(db.Model):
 
   @staticmethod
   def get_key_name(tags):
-    return "_" + hashlib.sha1(" ".join([x.strip().lower() for x in tags])).hexdigest()
+    return "_" + hashlib.sha1(" ".join([x.strip().lower() for x in tags]).encode()).hexdigest()
 
   @staticmethod
   def get_key(tags):

@@ -1,8 +1,9 @@
 from google.appengine.ext import db
-import json as simplejson
 
+from django.http import HttpResponse
+
+import json
 import logging
-
 import lib
 import model
 
@@ -70,25 +71,30 @@ def build_comment_dict(comment):
   return comment_dict
 
 class MapDataHandler(lib.BaseHandler):
-  def get(self, map_id):
+  def get(self, request, map_id):
     map = model.Map.get_by_map_id(int(map_id))
-    self.response.headers['Content-Type'] = 'text/json'
-    self.response.out.write(simplejson.dumps(build_map_dict(map)))
+    data = build_map_dict(map)
+    return HttpResponse(
+      json.dumps(data),
+      content_type="text/json"
+    )
 
 
 class CommentDataHandler(lib.BaseHandler):
-  def get(self, map_id):
+  def get(self, request, map_id):
     q = model.Comment.all().ancestor(model.Map.get_key(int(map_id))).fetch(1000)
     data = [build_comment_dict(c) for c in q]
-    self.response.headers['Content-Type'] = 'text/json'
-    self.response.out.write(simplejson.dumps(data))
+    return HttpResponse(
+      json.dumps(data),
+      content_type="text/json"
+    )
 
 
 class MapFirehoseHandler(lib.BaseHandler):
-  def get(self):
-    count = int(self.request.get('count', 100))
-    start = self.request.get('start', None)
-    tags = self.request.GET.getall('tag')
+  def get(self, request):
+    count = int(self.request.GET.get('count', 100))
+    start = self.request.GET.get('start', None)
+    tags = self.request.GET.getlist('tag')
     
     q = model.Map.all()
     if tags:
@@ -105,16 +111,17 @@ class MapFirehoseHandler(lib.BaseHandler):
     data = {
         'data': [build_map_dict(map) for map in maps],
         'count': len(maps),
-        'next': q.cursor(),
+        'next': q.cursor().decode(),
     }
-    self.response.headers['Content-Type'] = 'text/json'
-    self.response.out.write(simplejson.dumps(data))
-
+    return HttpResponse(
+      json.dumps(data),
+      content_type="text/json"
+    )
 
 class CommentFirehoseHandler(lib.BaseHandler):
-  def get(self):
-    count = int(self.request.get('count', 100))
-    start = self.request.get('start', None)
+  def get(self, request):
+    count = int(self.request.GET.get('count', 100))
+    start = self.request.GET.get('start', None)
     q = model.Comment.all().order('lastupdated')
     if start:
       q.with_cursor(start)
@@ -123,7 +130,11 @@ class CommentFirehoseHandler(lib.BaseHandler):
     data = {
         'data': [build_comment_dict(comment) for comment in comments],
         'count': len(comments),
-        'next': q.cursor(),
+        'next': q.cursor().decode(),
     }
-    self.response.headers['Content-Type'] = 'text/json'
-    self.response.out.write(simplejson.dumps(data))
+
+    return HttpResponse(
+      json.dumps(data),
+      content_type="text/json"
+    )
+

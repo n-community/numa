@@ -32,12 +32,14 @@
           <td><a href="/browse?q=featured+author:{{profile_user.username|urlencode}}">{{profile_user.featured_map_count}} (Show all)</a></td>
         </tr>
       {% endif %}
+      {% comment %}
+        <tr>
+          <th>Map Ratings</th>
+          <td><img src="{{profile_user.GetRatingHistogramURL}}" alt="" /></td>
+        </tr>
+      {% endcomment %}
       <tr>
-        <th>Map Ratings</th>
-        <td><img src="{{profile_user.GetRatingHistogramURL}}" alt="" /></td>
-      </tr>
-      <tr>
-        <th>Total Ratings</th>
+        <th>Ratings Received</th>
         <td>{{profile_user.ratings}}</td>
       </tr>
       {% if canmodify and profile_user.email %}
@@ -53,7 +55,6 @@
     {% endif %}
   </div>
 </div>
-{% include "adbanner.html" %}
 {% if maps %}
   <div class="section">
     <h2>Recent Maps</h2>

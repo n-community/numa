@@ -2,14 +2,13 @@ from google.appengine.ext import db
 import re
 import random
 import os
-import logging
 import datetime
 
-from user import User
-from tag import Tag, TagJoin
-from sequence import Sequence
 import lib
-import setproperty
+from .setproperty import SetProperty
+from .user        import User
+from .tag         import Tag, TagJoin
+from .sequence    import Sequence
 
 class InvalidMapError(Exception): pass
 
@@ -47,7 +46,7 @@ class Map(db.Model):
   moderator_unlisted = db.BooleanProperty(required=True, default=False)
   reported = db.BooleanProperty(required=True, default=False)
   reported_by = db.ReferenceProperty(User, collection_name="reported_maps")
-  tags = setproperty.SetProperty(unicode, default=set([u"unrated"]))
+  tags = SetProperty(str, default=set([u"unrated"]))
   category = db.StringProperty()
   image_url = db.StringProperty(indexed=False)
 
@@ -105,15 +104,15 @@ class Map(db.Model):
 
       map = Map.get(map_key)
       old_bar = new_bar = None
-      if map.rated:
-        old_bar = min(int((map.rating / Map.MAX_RATING) * User.HISTOGRAM_SIZE),
-                      User.HISTOGRAM_SIZE - 1)
+      # if map.rated:
+      #   old_bar = min(int((map.rating / Map.MAX_RATING) * User.HISTOGRAM_SIZE),
+      #                 User.HISTOGRAM_SIZE - 1)
       map.rating = (map.rating * map.votes + rating) / (map.votes + delta)
       map.votes += delta
       map.rated = (map.votes >= Map.RATING_THRESHOLD)
       if map.rated:
-        new_bar = min(int((map.rating / Map.MAX_RATING) * User.HISTOGRAM_SIZE),
-                      User.HISTOGRAM_SIZE - 1)
+        # new_bar = min(int((map.rating / Map.MAX_RATING) * User.HISTOGRAM_SIZE),
+        #               User.HISTOGRAM_SIZE - 1)
         if "rated" not in map.tags:
           map.tags.discard(u"unrated")
           map.tags.add(u"rated")
@@ -133,8 +132,8 @@ class Map(db.Model):
 
     def DoUpdateUser(old_bar, new_bar, change_rated_count):
       user = User.get(self.user.key())
-      if old_bar: user.rating_histogram[old_bar] -= abs(delta)/delta
-      if new_bar: user.rating_histogram[new_bar] += abs(delta)/delta
+      # if old_bar: user.rating_histogram[old_bar] -= abs(delta)/delta
+      # if new_bar: user.rating_histogram[new_bar] += abs(delta)/delta
       user.ratings += delta
       if change_rated_count:
         user.rated_map_count += delta
@@ -301,7 +300,7 @@ class Map(db.Model):
     """Is the map featured as far as the site is concerned?
 
     This will return False for maps queued up to be Featured in the future."""
-    return self.featured_date and self.featured_date <= datetime.datetime.now()
+    return self.featured_date and self.featured_date <= datetime.datetime.utcnow()
 
 def ReadBadwords():
   f = open(os.path.join(os.path.dirname(__file__), "..", "badwords.txt"), "r")
@@ -320,7 +319,8 @@ class Comment(db.Model):
   reported = db.BooleanProperty(required=True, default=False)
   reported_by = db.ReferenceProperty(User, collection_name="reported_comments")
 
-  demo_re = re.compile("^[0-9]+:[0-9]+(\|[0-9]+)*$")
+  demo_re = re.compile(r"^[0-9]+:[0-9]+(\|[0-9]+)*$")
+  
   @staticmethod
   def ValidateDemo(demodata):
     return Comment.demo_re.search(demodata) != None

@@ -3,3 +3,5 @@ config.py
 .gitsecret/keys/random_seed
 !*.secret
 .data
+notes.txt
+seed_data/

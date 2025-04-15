@@ -1,17 +1,14 @@
-runtime: python27
-api_version: 1
-threadsafe: true
+runtime: python312
+
+app_engine_apis: true
 
 builtins:
 - deferred: on
 - remote_api: on
 - appstats: on
 
-libraries:
-- name: django
-  version: "1.2"
-- name: PIL
-  version: "1.1.7"
+automatic_scaling:
+  max_instances: 2
 
 handlers:
 - url: /static
@@ -26,5 +23,5 @@ handlers:
   secure: always
 
 - url: /.*
-  script: request.application
+  script: auto
   secure: always

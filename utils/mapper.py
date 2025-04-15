@@ -1,6 +1,8 @@
 import logging
 import socket
-import urllib2
+# untest python 3 upgrade change
+# import urllib2
+from urllib.error import URLError
 from google.appengine.ext import db
 
 class KindIterator(object):
@@ -38,7 +40,7 @@ class KindIterator(object):
   
   def next(self):
     try:
-      return self.current_iter.next()
+      return next(self.current_iter)
     except StopIteration:
       if self.eof:
         raise StopIteration()
@@ -50,7 +52,7 @@ class KindIterator(object):
           q = self._get_query()
           results = q.fetch(batch_size)
           break
-        except (db.Timeout, urllib2.URLError, socket.error):
+        except (db.Timeout, URLError, socket.error):
           if batch_size > 1:
             batch_size /= 2
           logging.warn("Query timed out; retrying with %d", batch_size)
@@ -65,7 +67,7 @@ class KindIterator(object):
       else:
         self.last_key = results[-1].properties()[self.key_field].__get__(results[-1], None)
       self.current_iter = iter(results)
-      return self.current_iter.next()
+      return next(self.current_iter)
 
 
 class BatchUpdater(object):
@@ -88,7 +90,7 @@ class BatchUpdater(object):
         try:
           self.op(self.current_batch[-batch_size:])
           break
-        except (db.Timeout, urllib2.URLError, socket.error):
+        except (db.Timeout, URLError, socket.error):
           if batch_size > 1:
             batch_size /= 2
           logging.info("Got timeout while putting batch; retrying with %d", batch_size)

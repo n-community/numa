@@ -5,6 +5,7 @@
     <h2>User information for "{{profile_user.username|escape}}"{% if profile_user.title %}, {{profile_user.title}}{% endif %}</h2>
     <div class="body">
       <form method="post" action="/user/{{profile_user.username|urlencode}}" enctype="multipart/form-data">
+      {% csrf_token %}
       <table class="formtable">
         <tr>
           <th>Avatar</th>
