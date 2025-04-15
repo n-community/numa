@@ -1,69 +1,73 @@
 {% extends "home_section.html" %}
 {% block title %}Frequently Asked Questions{% endblock %}
 {% block content %}
+
 <div class="section">
 	<h2>Frequently Asked Questions</h2>
 	<div class="body">
-    <dl>
-      <dt>What's NUMA?</dt>
-      <dd>NUMA stands for N User Map Archive. It is a place where those who create their own original maps in Ned may post them for other N players around the world to view and play. NUMA comes with a few features that make it easy to view, browse and play maps. Among these include:
-        <ul>
-          <li>Ratings - NUMA features a simple rating system from 0 to 5 ninjas, with the ability to rate maps in increments of 0.5. Ratings are kept hidden for only you to see until you receive ratings from 5 different registered users on NUMA, at which point it becomes a public rating that everybody can see.</li>
-          <li>My Favorites - The My Favorites link in the navigation bar allows you to see maps that you have deemed your... well, your favorites. Underneath the rating dropdown menu there is a button that says "Add to Favorites" and it does just that. Once you have clicked that button you can click on the link that says My Favorites and the map you have just favorited will be at the top, while maps you have favorited in the past will be below it.</li>
-          <li>Bitesize - Bitesizing is a special addition to NUMA in that it sets some maps apart from others in one way or another. In essence, a Bitesized map should implement an idea or concept in a brand new or interesting way. Gameplay of a Bitesized map is also of exceptional quality, though this isn't always the case because people have different tastes in maps.</li>
-          <li>Top rated - The Top rated link in the navigation bar leads you to a list of maps that are ordered from highest average rating to lowest average rating. Usually if a map reaches the Top rated section that means that at least 5 people thought the map was exceptionally good and probably at least 3 of those people rated the map a 5.</li>
-        </ul>
-      </dd>
-
-      <dt><a name="register">Great! How do I sign up?</a><dt>
-      <dd>NUMA's login system is integrated with the N highscore account system. In order to get an account on NUMA, <a href="http://www.thewayoftheninja.org/n_history.html">download N v1.4</a> (or the fan mod, <a href="http://n.infunity.com/">NReality</a>), run it, click on 'configure', enter a username and password in the boxes provided, and click 'create new user'. You can then use that account to log into NUMA.</dd>
-
-      <dt>Okay, I've signed up. Where are all the maps?</dt>
-      <dd>Click on the link that says "Newest" in the navigation bar. That'll show you the latest maps. Notice at the bottom you can continue to another page, in case you want to look for a map that was fun that you may have missed earlier.</dd>
-
-      <dt>I can't figure out how to play a map from NUMA in Ned. Help?</dt>
-      <dd>Underneath the map description there are two text fields. One is the raw data of the map that is shown in the thumbnail and the other is set up for you if you would like to add the level to your user levels (which you can find out what those are by thinking about it for a moment). To play the map in Ned simply copy the level data from the upper text box and paste it into the upper text box in Ned. Then click outside of the textbox and press L to load the map.</dd>
-
-      <dt>I want to add a map to my user le-</dt>
-      <dd>Read the Manual that comes with N to find out more about that.</dd>
-
-      <dt>I have completed a map and I would like to submit it to NUMA.</dt>
-      <dd>Great! Follow southpaw's easy, step-by-step guide to submitting a map!</dd>
-        <ol>
-          <li>Click on the link that says "Submit a Map" in the navigation bar.</li>
-          <li>Give the map a name and description (try not to make the description incredibly long).</li>
-          <li>Paste the map data into the text box that says "Map Data" next to it.</li>
-          <li>Add any tags (which I'll explain next) you think are necessary (or even unnecessary) in the section that says "Tags"</li>
-          <li>Click on the "Submit" button and make sure the thumbnail and the map you were intending on posting look the same. If everything checks out click on the "Confirm" button.</li>
-        </ol>
-        Congratulations! Your map has been added to the Newest page for everyone to see!</dd>
-
-      <dt>I'm curious as to who runs NUMA?</dt>
-      <dd>Why, Arachnid and maestro of course. Sweep used to run Bitesized NUMA, and then kkstrong ran it for a (short) while.</dd>
-
-      <dt>Wait, weren't you about to talk about tags?</dt>
-      <dd>I was. The Tag system on NUMA works like any other tag system. First of all, there are 2 tags that are not editable. The first is the "author" tag, which simply says your username. The second is the "rated/unrated" tag, which says whether or not the map has a public rating (has been rated by at least 5 people). There is a third tag which is can only be toggled by a person with Bitesize rights. The only things these three tags do is differentiate your maps from other maps (ie, you from all other authors, rated maps from unrated maps and Bitesized maps from non-Bitesized maps). All other tags you put down are your own and you can make them your own.
-      <br /><br />
+		<dl>
+			<dt>What's NUMA?</dt>
+			<dd>NUMA stands for N User Map Archive. It is a place where those who create their own original maps in Ned may post them for other N players around the world to view and play. NUMA comes with a few features that make it easy to view, browse and play maps. Among these include:
+        
+				<ul>
+					<li>Ratings - NUMA features a simple rating system from 0 to 5 ninjas, with the ability to rate maps in increments of 0.5. Ratings are kept hidden for only you to see until you receive ratings from 5 different registered users on NUMA, at which point it becomes a public rating that everybody can see.</li>
+					<li>My Favorites - The My Favorites link in the navigation bar allows you to see maps that you have deemed your... well, your favorites. Underneath the rating dropdown menu there is a button that says "Add to Favorites" and it does just that. Once you have clicked that button you can click on the link that says My Favorites and the map you have just favorited will be at the top, while maps you have favorited in the past will be below it.</li>
+					<li>Bitesize - Bitesizing is a special addition to NUMA in that it sets some maps apart from others in one way or another. In essence, a Bitesized map should implement an idea or concept in a brand new or interesting way. Gameplay of a Bitesized map is also of exceptional quality, though this isn't always the case because people have different tastes in maps.</li>
+					<li>Top rated - The Top rated link in the navigation bar leads you to a list of maps that are ordered from highest average rating to lowest average rating. Usually if a map reaches the Top rated section that means that at least 5 people thought the map was exceptionally good and probably at least 3 of those people rated the map a 5.</li>
+				</ul>
+			</dd>
+			<dt>
+				<a name="register">Great! How do I sign up?</a>
+				<dt>
+					<dd>NUMA's login system is integrated with the N highscore account system. In order to get an account on NUMA, 
+						<a href="http://www.harveycartel.org/metanet/downloads.html">download N</a>, run it, click on 'configure', enter a username and password in the boxes provided, and click 'create new user'. You can then use that account to log into NUMA.
+					</dd>
+					<dt>Okay, I've signed up. Where are all the maps?</dt>
+					<dd>Press "Maps". Notice at the bottom you can continue to another page, in case you want to look for a map that was fun that you may have missed earlier.</dd>
+					<dt>I can't figure out how to play a map from NUMA in Ned. Help?</dt>
+					<dd>Underneath the map description there is a text field. It is set up for you if you would like to add the level to your user levels. To play the map in Ned simply copy the level data from the upper text box and paste it into the upper text box in Ned. Then click outside of the textbox and press L to load the map. If you find your levels load with corrupted objects outside the edges of the game, press L after selecting inside of the "demo data" box within Ned. This is never a problem when using Nreality.</dd>
+					<dt>I want to add a map to my user le-</dt>
+					<dd>Read the Manual that comes with N to find out more about that.</dd>
+					<dt>I have completed a map and I would like to submit it to NUMA.</dt>
+					<dd>Great! Follow southpaw's easy, step-by-step guide to submitting a map!</dd>
+					<ol>
+						<li>Click on the link that says "Profile" then "Submit a Map" in the navigation bar.</li>
+						<li>Give the map a name and description (try not to make the description incredibly long).</li>
+						<li>Paste the map data into the text box that says "Map Data" next to it.</li>
+						<li>Add any tags (which I'll explain next) you think are necessary (or even unnecessary) in the section that says "Tags"</li>
+						<li>Click on the "Submit" button and make sure the thumbnail and the map you were intending on posting look the same. If everything checks out click on the "Confirm" button.</li>
+					</ol>
+        Congratulations! Your map has been added to the Newest page for everyone to see!
+				</dd>
+				<dt>I'm curious as to who runs NUMA?</dt>
+				<dd>Why, Arachnid and maestro of course. Sweep used to run Bitesized NUMA, and then kkstrong ran it for a (short) while. In this decade there have been a handful of different administrators, the current state can be found at 
+					<a href="https://www.nmaps.net/whoswho">Who's Who</a>.
+				</dd>
+				<dt>Wait, weren't you about to talk about tags?</dt>
+				<dd>I was. The Tag system on NUMA works like any other tag system. First of all, there are 2 tags that are not editable. The first is the "author" tag, which simply says your username. The second is the "rated/unrated" tag, which says whether or not the map has a public rating (has been rated by at least 5 people). There are third and fourth tags which are only changed by people with Bitesize rights (historically), or reviewing privileges (currently). All other tags you put down are your own and you can make them your own.
+      
+					<br />
+					<br />
       For starters, let's suggest that you wanted to make a series of maps on NUMA that were all fairly similar and were meant to be played in succession. By using the tag system you can tag all of the maps you want grouped together with a single tag, as in _destiny^-'s d-elemental series. In this way you can play only the d-elemental maps that _destiny^- has made (though there is one map in there by FacetiousPantsWearer...).
-      <br /><br />
+      
+					<br />
+					<br />
       The tag system can do much more than this though. For example, you remember the three tags mentioned earlier (author, rated/unrated and bitesized)? I'll explain why they are important now. Let us say you wanted to search for maps made by Fingersonthefrets because you've heard he makes amazing maps. To do so, simply type author:Fingersonthefrets in the Search field and press Search. All maps made by the author Fingersonthefrets will now show up for you to view and play.
-      <br /><br />
+      
+					<br />
+					<br />
       Now... let us say you wanted to play only the unrated maps by Fingersonthefrets. In the search field simply type in the following without quotes: "author:Fingersonthefrets unrated".
       The space between the author: and "unrated" tags means that it will search for all maps made by Fingersonthefrets that have the "unrated" tag. The same can be done if you wanted to play his "rated" or Bitesized maps, except one would type "rated" or Bitesized instead of "unrated". Starting to make sense?
-      <br /><br />
-      The NUMA tag system also allows you to search for map titles. This is helpful if you happen to remember the name of a map but can't remember the name of the author (it happens to the best of us sometimes). To search for a title of a map simply put title:"insert name of map here". In this example the quotes are very very important. If you were looking for the map Annabelle Lies, Sleeps With Quiet Eyes but couldn't remember who it was that made it. Simply type title:"Annabelle Lies" (this will be enough to search for the map) and it will search for all maps that have the words "Annabelle Lies" in succession. If you don't add the quotes to the search query then you will end up searching for all maps with the word Annabelle in the title and of those maps it will search for the tag Lies. As far as I know this will not return any search results.</dd>
-
-      <dt>I keep seeing acronyms such as AGD, DDA and FBF on NUMA occasionally. What do they mean?</dt>
-      <dd>All the explanations to all the acronyms you will come across on NUMA are <a href="http://metanet.2.forumer.com/index.php?showtopic=14751">here</a>.</dd>
-
-      <dt>Someone sniped my map. What should I do?</dt>
-      <dd>First of all, let me explain sniping. A snipe is usually a rating of zero that is given to a map for many various reasons which are too numerous to list. Either way, a sniper is one who gives out these low ratings.</dd>
-      <br /><br />
-      There is one key difference among getting rated 0 as a new mapmaker and getting rated 0 as an old mapmaker. One such difference is that as a n00b one is probably not going to make the best of the best maps (though there have been exceptions like Fenominous's map, Inside the outer world). Getting rated a 0 when you are a new mapmaker is much like saying you have very little mapmaking ability. This doesn't mean that newbies should fret and frown over a simple rating such as this. It simply means that you need some time to hone your skills.
-      Getting rated a 0 as an old mapmaker is somewhat of a different story. This usually means that there is someone out there who is having fun messing with your user ratings by rating your maps 0. Usually old mapmakers are consistent with making good maps so when a 0 rating is given to someone who has been around NUMA for quite a long time a lot of the time it's not because the map is terrible.
-      <br /><br />
-      What do we do about sniping? There isn't a lot you can do. The best solution to snipers is to ignore them. don't post comments on your own map saying, "OMG! I just got sniped! Show yourself, punk!" because you will almost never get a response and that just brings attention to the issue. Continue on with your mapmaking. Snipers come and go and rarely ever stick with one mapmaker for very long.</dd>
-    </dl>
-  </div>
-</div>
+      
+					<br />
+					<br />
+      The NUMA tag system also allows you to search for map titles. This is helpful if you happen to remember the name of a map but can't remember the name of the author (it happens to the best of us sometimes). To search for a title of a map simply put title:"insert name of map here". In this example the quotes are very very important. If you were looking for the map Annabelle Lies, Sleeps With Quiet Eyes but couldn't remember who it was that made it. Simply type title:"Annabelle Lies" (this will be enough to search for the map) and it will search for all maps that have the words "Annabelle Lies" in succession. If you don't add the quotes to the search query then you will end up searching for all maps with the word Annabelle in the title and of those maps it will search for the tag Lies. As far as I know this will not return any search results.
+				</dd>
+				<dt>I keep seeing acronyms such as AGD, DDA and FBF on NUMA occasionally. What do they mean?</dt>
+				<dd>All the explanations to all the acronyms you will come across on NUMA are 
+					<a href="http://forum.droni.es/viewtopic.php?f=19&t=10513">here</a>.
+				</dd>
+			</dl>
+		</div>
+	</div>
 {% endblock %}
